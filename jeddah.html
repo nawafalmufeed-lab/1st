@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jeddah - Gateway to the Red Sea</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #001f3f 0%, #003d5c 50%, #002b4d 100%);
+            color: #fff;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding: 30px;
+            border: 3px solid #00bfff;
+            border-radius: 20px;
+            background: rgba(0, 191, 255, 0.08);
+            box-shadow: 0 0 30px rgba(0, 191, 255, 0.6),
+                        inset 0 0 30px rgba(0, 191, 255, 0.1);
+        }
+
+        h1.wave {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #40e0d0;
+            text-shadow:
+                0 0 10px #40e0d0,
+                0 0 20px #40e0d0,
+                0 0 40px #40e0d0,
+                0 0 80px #1e90ff;
+            letter-spacing: 8px;
+            animation: wave 3s ease-in-out infinite;
+        }
+
+        @keyframes wave {
+            0%, 100% {
+                text-shadow:
+                    0 0 10px #40e0d0,
+                    0 0 20px #40e0d0,
+                    0 0 40px #40e0d0,
+                    0 0 80px #1e90ff;
+                transform: translateY(0px);
+            }
+            50% {
+                text-shadow:
+                    0 0 20px #40e0d0,
+                    0 0 40px #40e0d0,
+                    0 0 60px #1e90ff,
+                    0 0 100px #1e90ff;
+                transform: translateY(-5px);
+            }
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            color: #87ceeb;
+            text-shadow: 0 0 10px #87ceeb, 0 0 20px #4682b4;
+            margin-top: 10px;
+            letter-spacing: 3px;
+        }
+
+        main {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .content-box {
+            padding: 25px;
+            border: 2px solid #20b2aa;
+            border-radius: 15px;
+            background: rgba(32, 178, 170, 0.08);
+            box-shadow: 0 0 20px rgba(32, 178, 170, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .content-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 30px rgba(0, 191, 255, 0.7);
+            border-color: #00bfff;
+            background: rgba(0, 191, 255, 0.1);
+        }
+
+        .section-title {
+            color: #48d1cc;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px #48d1cc, 0 0 20px #20b2aa;
+        }
+
+        p {
+            color: #e0f4ff;
+            font-size: 1rem;
+            text-align: justify;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            border-top: 2px solid #00bfff;
+            margin-top: 20px;
+        }
+
+        .footer-text {
+            color: #87ceeb;
+            font-size: 1.2rem;
+            text-shadow: 0 0 10px #87ceeb;
+        }
+
+        @media (max-width: 768px) {
+            h1.wave {
+                font-size: 2.5rem;
+                letter-spacing: 4px;
+            }
+
+            .subtitle {
+                font-size: 1.2rem;
+            }
+
+            main {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 class="wave">JEDDAH</h1>
+            <p class="subtitle">Gateway to the Red Sea</p>
+        </header>
+
+        <main>
+            <section class="content-box">
+                <h2 class="section-title">Coastal Paradise</h2>
+                <p>Jeddah, Saudi Arabia's second-largest city, is a breathtaking coastal metropolis situated on the sparkling shores of the Red Sea. Known as the "Bride of the Red Sea," this vibrant port city combines stunning waterfront views with rich cultural heritage and modern sophistication.</p>
+            </section>
+
+            <section class="content-box">
+                <h2 class="section-title">Historic Gateway</h2>
+                <p>For centuries, Jeddah has served as the principal gateway for millions of pilgrims traveling to Mecca. The historic Al-Balad district, a UNESCO World Heritage Site, showcases traditional coral stone architecture and bustling souks that tell stories of ancient maritime trade routes.</p>
+            </section>
+
+            <section class="content-box">
+                <h2 class="section-title">Modern Waterfront</h2>
+                <p>The magnificent Jeddah Corniche stretches along the coast, featuring stunning sculptures, pristine beaches, and the iconic King Fahd Fountain—the world's tallest. Luxury resorts, world-class restaurants, and vibrant cafes line the waterfront, creating an unforgettable coastal experience.</p>
+            </section>
+
+            <section class="content-box">
+                <h2 class="section-title">Cultural Hub</h2>
+                <p>Jeddah embraces a cosmopolitan lifestyle, blending traditional Saudi culture with international influences. The city hosts prestigious art exhibitions, cultural festivals, and the renowned Red Sea International Film Festival, establishing itself as a dynamic center for arts and entertainment in the region.</p>
+            </section>
+        </main>
+
+        <footer>
+            <p class="footer-text">Experience the Beauty of Jeddah 🌊</p>
+        </footer>
+    </div>
+</body>
+</html>
