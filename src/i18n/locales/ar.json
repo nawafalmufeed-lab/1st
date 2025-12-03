@@ -1,0 +1,118 @@
+{
+  "app": {
+    "title": "إدارة المدفوعات - مدارس"
+  },
+  "auth": {
+    "login": "تسجيل الدخول",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "welcome": "مرحباً بعودتك",
+    "loginSubtitle": "يرجى تسجيل الدخول للوصول إلى نظام إدارة المدفوعات",
+    "loginAsReviewer": "تسجيل الدخول كمراجع",
+    "loginAsApprover": "تسجيل الدخول كمعتمد",
+    "logout": "تسجيل الخروج"
+  },
+  "nav": {
+    "dashboard": "لوحة التحكم",
+    "transactions": "المعاملات",
+    "review": "المراجعة",
+    "approval": "الاعتماد"
+  },
+  "dashboard": {
+    "title": "لوحة التحكم",
+    "overview": "نظرة عامة",
+    "totalTransactions": "إجمالي المعاملات",
+    "pendingReview": "قيد المراجعة",
+    "underReview": "تحت المراجعة",
+    "approved": "معتمدة",
+    "completed": "مكتملة",
+    "failed": "فاشلة",
+    "totalAmount": "المبلغ الإجمالي",
+    "totalFees": "إجمالي الرسوم"
+  },
+  "transactions": {
+    "title": "المعاملات",
+    "id": "رقم المعاملة",
+    "school": "المدرسة",
+    "student": "الطالب",
+    "originalAmount": "المبلغ الأصلي",
+    "deductions": "الخصومات",
+    "netAmount": "صافي المبلغ",
+    "paymentMethod": "طريقة الدفع",
+    "status": "الحالة",
+    "date": "التاريخ",
+    "iban": "رقم الآيبان",
+    "actions": "الإجراءات",
+    "viewDetails": "عرض التفاصيل",
+    "review": "مراجعة",
+    "approve": "اعتماد",
+    "download": "تحميل",
+    "searchPlaceholder": "البحث بالرقم، المدرسة، الطالب، الآيبان...",
+    "filterByStatus": "تصفية حسب الحالة",
+    "allStatuses": "كل الحالات",
+    "selected": "محدد",
+    "noTransactions": "لا توجد معاملات"
+  },
+  "status": {
+    "pending_review": "قيد المراجعة",
+    "under_review": "تحت المراجعة",
+    "approved": "معتمدة",
+    "completed": "مكتملة",
+    "failed": "فاشلة"
+  },
+  "paymentMethod": {
+    "mada": "مدى",
+    "visa": "فيزا",
+    "mastercard": "ماستركارد",
+    "tamara": "تمارا (تمويل)"
+  },
+  "details": {
+    "title": "تفاصيل المعاملة",
+    "backToList": "العودة إلى القائمة",
+    "transactionInfo": "معلومات المعاملة",
+    "paymentInfo": "معلومات الدفع",
+    "statusInfo": "معلومات الحالة",
+    "contractType": "نوع العقد",
+    "firstTransaction": "أول معاملة",
+    "yes": "نعم",
+    "no": "لا",
+    "activationFee": "رسوم التفعيل",
+    "transactionFee": "رسوم المعاملة",
+    "totalDeductions": "إجمالي الخصومات",
+    "reviewedBy": "تمت المراجعة بواسطة",
+    "reviewedAt": "تاريخ المراجعة",
+    "approvedBy": "تم الاعتماد بواسطة",
+    "approvedAt": "تاريخ الاعتماد",
+    "failureReason": "سبب الفشل"
+  },
+  "review": {
+    "title": "مراجعة المعاملات",
+    "subtitle": "مراجعة والتحقق من المعاملات المعلقة",
+    "markAsReviewed": "وضع علامة كمراجع",
+    "reject": "رفض",
+    "pendingCount": "معاملة قيد المراجعة"
+  },
+  "approval": {
+    "title": "اعتماد المعاملات",
+    "subtitle": "اعتماد المعاملات المراجعة للدفع",
+    "approveSelected": "اعتماد المحدد",
+    "rejectSelected": "رفض المحدد",
+    "underReviewCount": "معاملة تحت المراجعة"
+  },
+  "common": {
+    "sar": "ريال",
+    "loading": "جاري التحميل...",
+    "error": "خطأ",
+    "success": "نجح",
+    "cancel": "إلغاء",
+    "confirm": "تأكيد",
+    "save": "حفظ",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "search": "بحث",
+    "filter": "تصفية",
+    "export": "تصدير",
+    "import": "استيراد",
+    "close": "إغلاق"
+  }
+}

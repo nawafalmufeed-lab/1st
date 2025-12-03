@@ -1,0 +1,118 @@
+{
+  "app": {
+    "title": "Madares Payout Management"
+  },
+  "auth": {
+    "login": "Login",
+    "email": "Email",
+    "password": "Password",
+    "welcome": "Welcome Back",
+    "loginSubtitle": "Please login to access the payout management system",
+    "loginAsReviewer": "Login as Reviewer",
+    "loginAsApprover": "Login as Approver",
+    "logout": "Logout"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "transactions": "Transactions",
+    "review": "Review",
+    "approval": "Approval"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "overview": "Overview",
+    "totalTransactions": "Total Transactions",
+    "pendingReview": "Pending Review",
+    "underReview": "Under Review",
+    "approved": "Approved",
+    "completed": "Completed",
+    "failed": "Failed",
+    "totalAmount": "Total Amount",
+    "totalFees": "Total Fees"
+  },
+  "transactions": {
+    "title": "Transactions",
+    "id": "Transaction ID",
+    "school": "School",
+    "student": "Student",
+    "originalAmount": "Original Amount",
+    "deductions": "Deductions",
+    "netAmount": "Net Amount",
+    "paymentMethod": "Payment Method",
+    "status": "Status",
+    "date": "Date",
+    "iban": "IBAN",
+    "actions": "Actions",
+    "viewDetails": "View Details",
+    "review": "Review",
+    "approve": "Approve",
+    "download": "Download",
+    "searchPlaceholder": "Search by ID, School, Student, IBAN...",
+    "filterByStatus": "Filter by Status",
+    "allStatuses": "All Statuses",
+    "selected": "selected",
+    "noTransactions": "No transactions found"
+  },
+  "status": {
+    "pending_review": "Pending Review",
+    "under_review": "Under Review",
+    "approved": "Approved",
+    "completed": "Completed",
+    "failed": "Failed"
+  },
+  "paymentMethod": {
+    "mada": "Mada",
+    "visa": "Visa",
+    "mastercard": "Mastercard",
+    "tamara": "Tamara (Financing)"
+  },
+  "details": {
+    "title": "Transaction Details",
+    "backToList": "Back to List",
+    "transactionInfo": "Transaction Information",
+    "paymentInfo": "Payment Information",
+    "statusInfo": "Status Information",
+    "contractType": "Contract Type",
+    "firstTransaction": "First Transaction",
+    "yes": "Yes",
+    "no": "No",
+    "activationFee": "Activation Fee",
+    "transactionFee": "Transaction Fee",
+    "totalDeductions": "Total Deductions",
+    "reviewedBy": "Reviewed By",
+    "reviewedAt": "Reviewed At",
+    "approvedBy": "Approved By",
+    "approvedAt": "Approved At",
+    "failureReason": "Failure Reason"
+  },
+  "review": {
+    "title": "Review Transactions",
+    "subtitle": "Review and validate pending transactions",
+    "markAsReviewed": "Mark as Reviewed",
+    "reject": "Reject",
+    "pendingCount": "transactions pending review"
+  },
+  "approval": {
+    "title": "Approve Transactions",
+    "subtitle": "Approve reviewed transactions for payout",
+    "approveSelected": "Approve Selected",
+    "rejectSelected": "Reject Selected",
+    "underReviewCount": "transactions under review"
+  },
+  "common": {
+    "sar": "SAR",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "search": "Search",
+    "filter": "Filter",
+    "export": "Export",
+    "import": "Import",
+    "close": "Close"
+  }
+}
