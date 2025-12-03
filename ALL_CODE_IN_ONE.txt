@@ -1,0 +1,358 @@
+===========================================
+PAYOUT MANAGEMENT SYSTEM - ALL SOURCE CODE
+===========================================
+
+This file contains all the source code from the Payout Management System.
+All files have been consolidated into one document for easy reference.
+
+TABLE OF CONTENTS:
+1. Type Definitions (src/types/index.ts)
+2. Mock Data (src/data/mockData.ts)
+3. Context - Auth (src/context/AuthContext.tsx)
+4. Context - Language (src/context/LanguageContext.tsx)
+5. Context - Transaction (src/context/TransactionContext.tsx)
+6. Components - Layout (src/components/Layout.tsx)
+7. Pages - Login (src/pages/Login.tsx)
+8. Pages - Dashboard (src/pages/Dashboard.tsx)
+9. Pages - Transactions List (src/pages/TransactionsList.tsx)
+10. Pages - Transaction Detail (src/pages/TransactionDetail.tsx)
+11. Pages - Review (src/pages/ReviewPage.tsx)
+12. Pages - Approval (src/pages/ApprovalPage.tsx)
+13. App Component (src/App.tsx)
+14. Main Entry (src/main.tsx)
+15. Styles (src/index.css)
+16. Configuration Files
+
+===========================================
+Project Information:
+- Framework: React 18 + TypeScript
+- Build Tool: Vite
+- Styling: Tailwind CSS
+- Charts: Recharts
+- Icons: Lucide React
+- Routing: React Router v6
+===========================================
+
+Demo Accounts:
+- Reviewer: username: reviewer1, password: password
+- Approver: username: approver1, password: password
+- Admin: username: admin1, password: password
+
+Quick Start:
+cd payout-system
+npm install
+npm run dev
+
+===========================================
+
+========================================
+FILE: 
+========================================
+
+========================================
+FILE: 
+========================================
+
+========================================
+FILE: 
+========================================
+
+========================================
+FILE: 
+========================================
+
+========================================
+FILE: 
+========================================
+
+========================================
+FILE: 
+========================================
+
+========================================
+FILE: 
+========================================
+
+========================================
+FILE: 
+========================================
+
+========================================
+FILE: 
+========================================
+
+========================================
+FILE: 
+========================================
+
+========================================
+FILE: 
+========================================
+
+========================================
+FILE: 
+========================================
+
+========================================
+FILE: 
+========================================
+
+========================================
+FILE: 
+========================================
+
+========================================
+FILE: src/index.css
+========================================
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: Inter, system-ui, Avicenna, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+}
+
+[dir="rtl"] {
+  direction: rtl;
+  font-family: 'Cairo', 'Tajawal', system-ui, Arial, sans-serif;
+}
+
+[dir="ltr"] {
+  direction: ltr;
+}
+
+========================================
+FILE: tailwind.config.js
+========================================
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        primary: {
+          DEFAULT: '#4DB6AC',
+          50: '#E0F2F1',
+          100: '#B2DFDB',
+          200: '#80CBC4',
+          300: '#4DB6AC',
+          400: '#26A69A',
+          500: '#009688',
+          600: '#00897B',
+          700: '#00796B',
+          800: '#00695C',
+          900: '#004D40',
+        },
+      },
+    },
+  },
+  plugins: [],
+}
+
+========================================
+FILE: postcss.config.js
+========================================
+export default {
+  plugins: {
+    '@tailwindcss/postcss': {},
+    autoprefixer: {},
+  },
+}
+
+========================================
+FILE: package.json
+========================================
+{
+  "name": "payout-system",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "lucide-react": "^0.555.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "react-router-dom": "^7.10.0",
+    "recharts": "^3.5.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "@tailwindcss/postcss": "^4.1.17",
+    "@types/node": "^24.10.1",
+    "@types/react": "^19.2.5",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.1",
+    "autoprefixer": "^10.4.22",
+    "eslint": "^9.39.1",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.24",
+    "globals": "^16.5.0",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.17",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.46.4",
+    "vite": "^7.2.4"
+  }
+}
+
+========================================
+FILE: vite.config.ts
+========================================
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+// https://vite.dev/config/
+export default defineConfig({
+  plugins: [react()],
+})
+
+========================================
+FILE: tsconfig.json
+========================================
+{
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ]
+}
+
+========================================
+FILE: tailwind.config.js
+========================================
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        primary: {
+          DEFAULT: '#4DB6AC',
+          50: '#E0F2F1',
+          100: '#B2DFDB',
+          200: '#80CBC4',
+          300: '#4DB6AC',
+          400: '#26A69A',
+          500: '#009688',
+          600: '#00897B',
+          700: '#00796B',
+          800: '#00695C',
+          900: '#004D40',
+        },
+      },
+    },
+  },
+  plugins: [],
+}
+
+========================================
+FILE: postcss.config.js
+========================================
+export default {
+  plugins: {
+    '@tailwindcss/postcss': {},
+    autoprefixer: {},
+  },
+}
+
+========================================
+FILE: package.json
+========================================
+{
+  "name": "payout-system",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "lucide-react": "^0.555.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "react-router-dom": "^7.10.0",
+    "recharts": "^3.5.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "@tailwindcss/postcss": "^4.1.17",
+    "@types/node": "^24.10.1",
+    "@types/react": "^19.2.5",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.1",
+    "autoprefixer": "^10.4.22",
+    "eslint": "^9.39.1",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.24",
+    "globals": "^16.5.0",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.17",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.46.4",
+    "vite": "^7.2.4"
+  }
+}
+
+========================================
+FILE: vite.config.ts
+========================================
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+// https://vite.dev/config/
+export default defineConfig({
+  plugins: [react()],
+})
+
+========================================
+FILE: tsconfig.json
+========================================
+{
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ]
+}
+
+========================================
+FILE: index.html
+========================================
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>payout-system</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+
+========================================
+END OF FILE - TOTAL LINES: 356
+========================================
