@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام المدفوعات - مدارس</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- SheetJS library for Excel export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <svg width="40" height="40" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="10" y="15" width="8" height="30" fill="#2DD4BF"/>
+                        <rect x="21" y="10" width="8" height="35" fill="#2DD4BF"/>
+                        <rect x="32" y="15" width="8" height="30" fill="#2DD4BF"/>
+                        <rect x="5" y="8" width="40" height="4" fill="#2DD4BF"/>
+                    </svg>
+                    <div>
+                        <h1>مدارس</h1>
+                        <p class="subtitle">madares</p>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-tab="dashboard">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-text">لوحة التحكم</span>
+                </a>
+                <a href="#" class="nav-item" data-tab="transactions">
+                    <span class="nav-icon">💳</span>
+                    <span class="nav-text">التحويلات</span>
+                </a>
+                <a href="#" class="nav-item" data-tab="calculator">
+                    <span class="nav-icon">🧮</span>
+                    <span class="nav-text">حاسبة الرسوم</span>
+                </a>
+                <a href="#" class="nav-item" data-tab="users">
+                    <span class="nav-icon">👥</span>
+                    <span class="nav-text">المستخدمين</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="user-avatar">م</div>
+                    <div class="user-details">
+                        <div class="user-name" id="userName">محمد أحمد</div>
+                        <div class="user-role" id="userRole">مراجع</div>
+                    </div>
+                </div>
+                <button class="logout-btn" onclick="handleLogout()">
+                    <span>🚪</span>
+                    تسجيل الخروج
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Tab -->
+            <div id="dashboard" class="tab-content active">
+                <div class="page-header">
+                    <h2 class="page-title">لوحة التحكم</h2>
+                    <div class="header-meta">
+                        <span class="notification-icon">🔔</span>
+                    </div>
+                </div>
+
+                <!-- Financial Summary Cards -->
+                <div class="summary-grid">
+                    <div class="summary-card">
+                        <div class="summary-label">إجمالي المبالغ</div>
+                        <div class="summary-value">15,884.54 <span class="currency">ر.س</span></div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-label">رسوم التنشيط</div>
+                        <div class="summary-value">170.00 <span class="currency">ر.س</span></div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-label">رسوم المعاملات</div>
+                        <div class="summary-value">122.15 <span class="currency">ر.س</span></div>
+                    </div>
+                    <div class="summary-card primary">
+                        <div class="summary-label">صافي المبالغ</div>
+                        <div class="summary-value">15,592.39 <span class="currency">ر.س</span></div>
+                    </div>
+                </div>
+
+                <!-- Status Overview -->
+                <div class="dashboard-grid">
+                    <div class="status-section">
+                        <h3 class="section-title">الملخص الحالي</h3>
+                        <div class="status-cards">
+                            <div class="status-card pending" onclick="filterByStatus('ST-01')">
+                                <div class="status-icon">🕐</div>
+                                <div class="status-info">
+                                    <div class="status-label">بانتظار المراجعة</div>
+                                    <div class="status-count">2</div>
+                                    <div class="status-code">ST-01</div>
+                                </div>
+                            </div>
+                            <div class="status-card reviewing" onclick="filterByStatus('ST-02')">
+                                <div class="status-icon">🔍</div>
+                                <div class="status-info">
+                                    <div class="status-label">قيد المراجعة</div>
+                                    <div class="status-count">1</div>
+                                    <div class="status-code">ST-02</div>
+                                </div>
+                            </div>
+                            <div class="status-card approved" onclick="filterByStatus('ST-03')">
+                                <div class="status-icon">✅</div>
+                                <div class="status-info">
+                                    <div class="status-label">معتمد</div>
+                                    <div class="status-count">2</div>
+                                    <div class="status-code">ST-03</div>
+                                </div>
+                            </div>
+                            <div class="status-card transferred" onclick="filterByStatus('ST-04')">
+                                <div class="status-icon">✈️</div>
+                                <div class="status-info">
+                                    <div class="status-label">تم التحويل</div>
+                                    <div class="status-count">1</div>
+                                    <div class="status-code">ST-04</div>
+                                </div>
+                            </div>
+                            <div class="status-card failed" onclick="filterByStatus('ST-05')">
+                                <div class="status-icon">❌</div>
+                                <div class="status-info">
+                                    <div class="status-label">فشل التحويل</div>
+                                    <div class="status-count">0</div>
+                                    <div class="status-code">ST-05</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="transactions-section">
+                        <div class="section-header">
+                            <h3 class="section-title">آخر التحويلات</h3>
+                            <button class="btn-text" onclick="showTab('transactions')">عرض الكل ←</button>
+                        </div>
+                        <div class="recent-list" id="recentTransactionsList">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Transactions Tab -->
+            <div id="transactions" class="tab-content">
+                <div class="page-header">
+                    <h2 class="page-title">التحويلات</h2>
+                    <div class="page-actions">
+                        <button class="btn btn-icon" onclick="window.print()">
+                            <span>🔍</span>
+                            بحث
+                        </button>
+                        <button class="btn btn-primary" onclick="exportToExcel()">
+                            <span>📥</span>
+                            تصدير Excel
+                        </button>
+                        <button class="btn btn-success" onclick="reviewSelected()">
+                            <span>✓</span>
+                            مراجعة المحدد
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div class="filters-bar">
+                    <div class="search-box">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="searchInput" placeholder="البحث..." onkeyup="filterTransactions()">
+                    </div>
+                    <select class="filter-select" id="statusFilter" onchange="filterTransactions()">
+                        <option value="">حالة التحويل</option>
+                        <option value="ST-01">بانتظار المراجعة</option>
+                        <option value="ST-02">قيد المراجعة</option>
+                        <option value="ST-03">معتمد</option>
+                        <option value="ST-04">تم التحويل</option>
+                        <option value="ST-05">فشل التحويل</option>
+                    </select>
+                    <select class="filter-select" id="paymentFilter" onchange="filterTransactions()">
+                        <option value="">وسيلة الدفع</option>
+                        <option value="Mada">مدى</option>
+                        <option value="Visa">فيزا</option>
+                        <option value="MasterCard">ماستركارد</option>
+                        <option value="Tamara">تمارا</option>
+                    </select>
+                    <input type="date" class="filter-date" id="dateFilter" onchange="filterTransactions()">
+                </div>
+
+                <!-- Transactions Table -->
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" id="selectAll" onchange="toggleSelectAll()"></th>
+                                <th>رقم المرجعي التحويل</th>
+                                <th>وسيلة الدفع</th>
+                                <th>المبلغ الإجمالي</th>
+                                <th>رسوم التنشيط</th>
+                                <th>رسوم المعاملة</th>
+                                <th>صافي المبلغ</th>
+                                <th>اسم المدرسة</th>
+                                <th>رقم حساب المدرسة</th>
+                                <th>تاريخ التحويل</th>
+                                <th>حالة التحويل</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactionsTableBody">
+                            <!-- Will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Calculator Tab -->
+            <div id="calculator" class="tab-content">
+                <div class="page-header">
+                    <h2 class="page-title">حاسبة الرسوم</h2>
+                </div>
+
+                <div class="calculator-layout">
+                    <div class="calculator-form">
+                        <h3>احسب رسوم التحويل</h3>
+
+                        <div class="form-group">
+                            <label>المبلغ الأصلي (ر.س)</label>
+                            <input type="number" id="calcAmount" placeholder="أدخل المبلغ" min="0" step="0.01">
+                        </div>
+
+                        <div class="form-group">
+                            <label>وسيلة الدفع</label>
+                            <select id="calcPaymentMethod">
+                                <option value="">اختر وسيلة الدفع</option>
+                                <option value="mada">مدى (Mada) - 0.85%</option>
+                                <option value="visa">فيزا/ماستركارد (Visa/MasterCard) - 1.17%</option>
+                                <option value="tamara">التمويل (Tamara) - 10%</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>نوع العقد</label>
+                            <select id="calcContractType">
+                                <option value="">اختر نوع العقد</option>
+                                <option value="executive">تنفيذي (Executive) - رسوم تنشيط 85 ر.س</option>
+                                <option value="standard">عادي (Standard) - بدون رسوم تنشيط</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="calcIsFirstPayment">
+                                هل هذه أول دفعة للطالب؟
+                            </label>
+                        </div>
+
+                        <button class="btn btn-primary btn-block" onclick="calculateFees()">احسب الرسوم</button>
+                    </div>
+
+                    <div class="calculator-result" id="calculatorResult">
+                        <h3>نتيجة الحساب</h3>
+                        <div class="result-empty">
+                            <p>قم بإدخال البيانات وحساب الرسوم لعرض النتيجة</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Business Rules -->
+                <div class="rules-section">
+                    <h3>قواعد العمل (Business Rules)</h3>
+                    <div class="rules-grid">
+                        <div class="rule-card">
+                            <h4>BR-01: رسوم التنشيط الثابتة</h4>
+                            <p><strong>الوصف:</strong> خصم مبلغ ثابت من أول معاملة فقط لكل طالب</p>
+                            <p><strong>الشرط:</strong> يجب أن يكون العقد تنفيذي (Executive)</p>
+                            <p><strong>القيمة:</strong> 85 ر.س</p>
+                        </div>
+                        <div class="rule-card">
+                            <h4>BR-02: رسوم المعاملات</h4>
+                            <p><strong>مدى:</strong> 0.85% من قيمة المعاملة</p>
+                            <p><strong>فيزا/ماستركارد:</strong> 1.17% من قيمة المعاملة</p>
+                            <p><strong>تمارا:</strong> 10% من قيمة المعاملة</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users Tab -->
+            <div id="users" class="tab-content">
+                <div class="page-header">
+                    <h2 class="page-title">المستخدمين والصلاحيات</h2>
+                </div>
+
+                <div class="users-grid">
+                    <div class="user-card">
+                        <div class="user-card-header">
+                            <h3>المراجع (Reviewer)</h3>
+                            <span class="role-badge reviewer">Reviewer</span>
+                        </div>
+                        <p class="user-description">مسؤول عن مراجعة التحويلات والتحقق من دقتها</p>
+                        <h4>الصلاحيات:</h4>
+                        <ul class="permissions-list">
+                            <li><span class="check">✓</span> عرض قائمة التحويلات والتفاصيل</li>
+                            <li><span class="check">✓</span> تغيير الحالة من ST-01 إلى ST-02</li>
+                            <li><span class="check">✓</span> البحث والتصفية</li>
+                            <li><span class="cross">✗</span> اعتماد التحويلات</li>
+                        </ul>
+                    </div>
+                    <div class="user-card">
+                        <div class="user-card-header">
+                            <h3>المعتمد (Approver)</h3>
+                            <span class="role-badge approver">Approver</span>
+                        </div>
+                        <p class="user-description">مسؤول عن الاعتماد النهائي للتحويلات</p>
+                        <h4>الصلاحيات:</h4>
+                        <ul class="permissions-list">
+                            <li><span class="check">✓</span> عرض قائمة التحويلات والتفاصيل</li>
+                            <li><span class="check">✓</span> تغيير الحالة من ST-02 إلى ST-03</li>
+                            <li><span class="check">✓</span> اعتماد التحويلات</li>
+                            <li><span class="cross">✗</span> تغيير الحالة من ST-01 إلى ST-02</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Transaction Details Modal -->
+    <div id="detailsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>تفاصيل التحويل</h3>
+                <button class="close-btn" onclick="closeDetailsModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Details will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

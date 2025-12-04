@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول - مدارس</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="login-page">
+    <div class="login-container">
+        <div class="login-box">
+            <div class="login-header">
+                <svg width="60" height="60" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="10" y="15" width="8" height="30" fill="#2DD4BF"/>
+                    <rect x="21" y="10" width="8" height="35" fill="#2DD4BF"/>
+                    <rect x="32" y="15" width="8" height="30" fill="#2DD4BF"/>
+                    <rect x="5" y="8" width="40" height="4" fill="#2DD4BF"/>
+                </svg>
+                <h1>مدارس</h1>
+                <p class="subtitle">نظام المدفوعات</p>
+            </div>
+
+            <div class="user-types">
+                <div class="user-type active" onclick="selectUserType('reviewer')">
+                    <div class="user-type-icon">🔍</div>
+                    <div class="user-type-label">مراجع</div>
+                </div>
+                <div class="user-type" onclick="selectUserType('approver')">
+                    <div class="user-type-icon">✅</div>
+                    <div class="user-type-label">معتمد</div>
+                </div>
+            </div>
+
+            <form class="login-form" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>اسم المستخدم</label>
+                    <input type="text" id="username" placeholder="أدخل اسم المستخدم" required>
+                </div>
+
+                <div class="form-group">
+                    <label>كلمة المرور</label>
+                    <input type="password" id="password" placeholder="أدخل كلمة المرور" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block">تسجيل الدخول</button>
+            </form>
+
+            <div class="demo-credentials">
+                <h4>🔑 بيانات تجريبية</h4>
+                <p><strong>مراجع:</strong> reviewer / 123456</p>
+                <p><strong>معتمد:</strong> approver / 123456</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedUserType = 'reviewer';
+
+        function selectUserType(type) {
+            selectedUserType = type;
+            document.querySelectorAll('.user-type').forEach(el => {
+                el.classList.remove('active');
+            });
+            event.target.closest('.user-type').classList.add('active');
+
+            // Auto-fill credentials
+            if (type === 'reviewer') {
+                document.getElementById('username').value = 'reviewer';
+            } else {
+                document.getElementById('username').value = 'approver';
+            }
+            document.getElementById('password').value = '123456';
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if ((username === 'reviewer' || username === 'approver') && password === '123456') {
+                localStorage.setItem('userType', username);
+                localStorage.setItem('userName', username === 'reviewer' ? 'محمد أحمد' : 'أحمد محمد');
+                localStorage.setItem('isLoggedIn', 'true');
+                window.location.href = 'index.html';
+            } else {
+                alert('اسم المستخدم أو كلمة المرور غير صحيحة');
+            }
+        }
+
+        // Auto-fill on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('username').value = 'reviewer';
+            document.getElementById('password').value = '123456';
+        });
+    </script>
+</body>
+</html>
