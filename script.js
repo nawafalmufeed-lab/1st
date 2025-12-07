@@ -90,6 +90,8 @@ const transactions = [
 
 let allTransactions = [...transactions];
 let selectedTransactions = [];
+let notifications = [];
+let currentTransactionIndex = null;
 
 // ===================================
 // Initialization
@@ -115,6 +117,16 @@ window.addEventListener('DOMContentLoaded', function() {
     // Render initial data
     renderTransactions(allTransactions);
     renderRecentTransactions();
+
+    // Show notifications section for approver
+    if (userType === 'approver') {
+        const notificationsSection = document.getElementById('notificationsSection');
+        if (notificationsSection) {
+            notificationsSection.style.display = 'block';
+        }
+        updateNotificationBadge();
+        renderNotifications();
+    }
 });
 
 // ===================================
@@ -521,3 +533,317 @@ function exportToExcel() {
     // Save file
     XLSX.writeFile(wb, fileName);
 }
+
+// ===================================
+// Date Filter Functions
+// ===================================
+function applyDateFilter() {
+    const filterType = document.getElementById('dateFilterType').value;
+    const customDate = document.getElementById('customDate');
+
+    // Show/hide custom date input
+    if (filterType === 'custom') {
+        customDate.style.display = 'block';
+    } else {
+        customDate.style.display = 'none';
+    }
+
+    // Apply filter
+    const filtered = filterTransactionsByDate(allTransactions, filterType, customDate.value);
+    renderTransactions(filtered);
+    renderRecentTransactions();
+}
+
+function filterTransactionsByDate(transactions, filterType, customDateValue) {
+    if (!filterType) return transactions;
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    return transactions.filter(transaction => {
+        const transDate = parseDateString(transaction.date);
+
+        switch(filterType) {
+            case 'today':
+                return isSameDay(transDate, today);
+            case 'month':
+                return transDate.getMonth() === today.getMonth() &&
+                       transDate.getFullYear() === today.getFullYear();
+            case 'year':
+                return transDate.getFullYear() === today.getFullYear();
+            case 'custom':
+                if (!customDateValue) return true;
+                const customDate = new Date(customDateValue);
+                return isSameDay(transDate, customDate);
+            default:
+                return true;
+        }
+    });
+}
+
+function parseDateString(dateStr) {
+    // Parse date string format: "2025-12-04 10:29 ص"
+    const parts = dateStr.split(' ');
+    const dateParts = parts[0].split('-');
+    return new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
+}
+
+function isSameDay(date1, date2) {
+    return date1.getDate() === date2.getDate() &&
+           date1.getMonth() === date2.getMonth() &&
+           date1.getFullYear() === date2.getFullYear();
+}
+
+// ===================================
+// Notifications Functions
+// ===================================
+function updateNotificationBadge() {
+    const badge = document.getElementById('notificationBadge');
+    if (!badge) return;
+
+    const unreadCount = notifications.filter(n => !n.read).length;
+
+    if (unreadCount > 0) {
+        badge.textContent = unreadCount;
+        badge.style.display = 'flex';
+    } else {
+        badge.style.display = 'none';
+    }
+}
+
+function renderNotifications() {
+    const container = document.getElementById('notificationsList');
+    if (!container) return;
+
+    if (notifications.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 2rem;">لا توجد إشعارات جديدة</p>';
+        return;
+    }
+
+    container.innerHTML = notifications.map(notification => `
+        <div class="notification-item ${notification.read ? 'read' : ''}" onclick="openNotification(${notification.id})">
+            <div class="notification-content">
+                <div class="notification-title">${notification.title}</div>
+                <div class="notification-meta">${notification.message} • ${notification.date}</div>
+            </div>
+            <div class="notification-actions">
+                <button class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.75rem;" onclick="event.stopPropagation(); showDetails(${notification.transactionIndex})">
+                    عرض التفاصيل
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function openNotification(notificationId) {
+    const notification = notifications.find(n => n.id === notificationId);
+    if (notification) {
+        notification.read = true;
+        updateNotificationBadge();
+        renderNotifications();
+        showDetails(notification.transactionIndex);
+    }
+}
+
+function markAllAsRead() {
+    notifications.forEach(n => n.read = true);
+    updateNotificationBadge();
+    renderNotifications();
+}
+
+function showNotifications() {
+    showTab('transactions');
+    document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+    document.querySelector('[data-tab="transactions"]').classList.add('active');
+}
+
+function addNotification(transactionIndex, title, message) {
+    const notification = {
+        id: notifications.length,
+        transactionIndex: transactionIndex,
+        title: title,
+        message: message,
+        date: new Date().toLocaleDateString('ar-SA'),
+        read: false
+    };
+
+    notifications.push(notification);
+    updateNotificationBadge();
+    renderNotifications();
+}
+
+// ===================================
+// Update reviewSelected to create notification
+// ===================================
+const originalReviewSelected = reviewSelected;
+reviewSelected = function() {
+    if (selectedTransactions.length === 0) {
+        alert('الرجاء تحديد معاملة واحدة على الأقل');
+        return;
+    }
+
+    const confirm = window.confirm(`هل أنت متأكد من مراجعة ${selectedTransactions.length} معاملة؟\n\nسيتم تحديث الحالة من ST-01 إلى ST-02`);
+
+    if (confirm) {
+        selectedTransactions.forEach(index => {
+            if (allTransactions[index].status === 'ST-01') {
+                allTransactions[index].status = 'ST-02';
+
+                // Add notification for approver
+                addNotification(
+                    index,
+                    '🔔 تحويل جديد بحاجة للاعتماد',
+                    `${allTransactions[index].school} - ${allTransactions[index].netAmount.toFixed(2)} ر.س`
+                );
+            }
+        });
+
+        renderTransactions(allTransactions);
+        renderRecentTransactions();
+        document.getElementById('selectAll').checked = false;
+        selectedTransactions = [];
+
+        alert('تمت المراجعة بنجاح! تم إرسال إشعار للمعتمد.');
+    }
+};
+
+// ===================================
+// Approve/Reject Transaction Functions
+// ===================================
+function approveTransaction() {
+    if (currentTransactionIndex === null) return;
+
+    const transaction = allTransactions[currentTransactionIndex];
+
+    if (transaction.status !== 'ST-02') {
+        alert('يمكن اعتماد التحويلات التي في حالة "قيد المراجعة" فقط');
+        return;
+    }
+
+    const confirm = window.confirm(`هل أنت متأكد من اعتماد هذا التحويل؟\n\nالمدرسة: ${transaction.school}\nالمبلغ: ${transaction.netAmount.toFixed(2)} ر.س`);
+
+    if (confirm) {
+        transaction.status = 'ST-03';
+
+        // Remove notification if exists
+        notifications = notifications.filter(n => n.transactionIndex !== currentTransactionIndex);
+
+        renderTransactions(allTransactions);
+        renderRecentTransactions();
+        updateNotificationBadge();
+        renderNotifications();
+        closeDetailsModal();
+
+        alert('✅ تم اعتماد التحويل بنجاح!');
+    }
+}
+
+function rejectTransaction() {
+    if (currentTransactionIndex === null) return;
+
+    const transaction = allTransactions[currentTransactionIndex];
+
+    if (transaction.status !== 'ST-02') {
+        alert('يمكن رفض التحويلات التي في حالة "قيد المراجعة" فقط');
+        return;
+    }
+
+    const reason = prompt('الرجاء إدخال سبب الرفض:');
+
+    if (reason && reason.trim()) {
+        transaction.status = 'ST-01';
+        transaction.rejectionReason = reason.trim();
+
+        // Remove notification if exists
+        notifications = notifications.filter(n => n.transactionIndex !== currentTransactionIndex);
+
+        renderTransactions(allTransactions);
+        renderRecentTransactions();
+        updateNotificationBadge();
+        renderNotifications();
+        closeDetailsModal();
+
+        alert('❌ تم رفض التحويل. سيتم إرسال إشعار للمراجع بسبب الرفض.');
+    }
+}
+
+// ===================================
+// Update showDetails to show Approve/Reject buttons for Approver
+// ===================================
+const originalShowDetails = showDetails;
+showDetails = function(index) {
+    currentTransactionIndex = index;
+    const transaction = allTransactions[index];
+    const modal = document.getElementById('detailsModal');
+    const modalBody = document.getElementById('modalBody');
+    const modalFooter = document.getElementById('modalFooter');
+
+    modalBody.innerHTML = `
+        <div style="display: grid; gap: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: var(--bg-secondary); border-radius: 8px;">
+                <label style="font-size: 0.875rem; color: var(--text-secondary);">رقم المرجعي:</label>
+                <span style="font-family: 'Courier New', monospace; font-size: 0.75rem;">${transaction.id}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: var(--bg-secondary); border-radius: 8px;">
+                <label style="font-size: 0.875rem; color: var(--text-secondary);">اسم المدرسة:</label>
+                <span style="font-size: 0.875rem; font-weight: 600;">${transaction.school}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: var(--bg-secondary); border-radius: 8px;">
+                <label style="font-size: 0.875rem; color: var(--text-secondary);">رقم الحساب (IBAN):</label>
+                <span style="font-family: 'Courier New', monospace; font-size: 0.75rem;">${transaction.iban}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: var(--bg-secondary); border-radius: 8px;">
+                <label style="font-size: 0.875rem; color: var(--text-secondary);">المبلغ الأصلي:</label>
+                <span style="font-size: 0.875rem; font-weight: 600;">${transaction.originalAmount.toFixed(2)} ر.س</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: var(--bg-secondary); border-radius: 8px;">
+                <label style="font-size: 0.875rem; color: var(--text-secondary);">رسوم التنشيط:</label>
+                <span style="font-size: 0.875rem; font-weight: 600;">${transaction.activationFee.toFixed(2)} ر.س</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: var(--bg-secondary); border-radius: 8px;">
+                <label style="font-size: 0.875rem; color: var(--text-secondary);">رسوم المعاملة:</label>
+                <span style="font-size: 0.875rem; font-weight: 600;">${transaction.transactionFee.toFixed(2)} ر.س</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: var(--bg-secondary); border-radius: 8px;">
+                <label style="font-size: 0.875rem; color: var(--text-secondary);">صافي المبلغ:</label>
+                <span style="font-size: 1rem; font-weight: 700; color: var(--primary-color);">${transaction.netAmount.toFixed(2)} ر.س</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: var(--bg-secondary); border-radius: 8px;">
+                <label style="font-size: 0.875rem; color: var(--text-secondary);">وسيلة الدفع:</label>
+                <span class="payment-badge ${transaction.paymentMethod.toLowerCase()}">${transaction.paymentMethod}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: var(--bg-secondary); border-radius: 8px;">
+                <label style="font-size: 0.875rem; color: var(--text-secondary);">تاريخ التحويل:</label>
+                <span style="font-size: 0.875rem; font-weight: 600;">${transaction.date}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: var(--bg-secondary); border-radius: 8px;">
+                <label style="font-size: 0.875rem; color: var(--text-secondary);">حالة التحويل:</label>
+                <span class="status-badge ${getStatusClass(transaction.status)}">${getStatusText(transaction.status)}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: var(--bg-secondary); border-radius: 8px;">
+                <label style="font-size: 0.875rem; color: var(--text-secondary);">نوع العقد:</label>
+                <span style="font-size: 0.875rem; font-weight: 600;">${transaction.contractType}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: var(--bg-secondary); border-radius: 8px;">
+                <label style="font-size: 0.875rem; color: var(--text-secondary);">أول دفعة:</label>
+                <span style="font-size: 0.875rem; font-weight: 600;">${transaction.isFirstPayment ? 'نعم' : 'لا'}</span>
+            </div>
+            ${transaction.rejectionReason ? `
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: #FEE2E2; border-radius: 8px;">
+                <label style="font-size: 0.875rem; color: var(--error);">سبب الرفض:</label>
+                <span style="font-size: 0.875rem; font-weight: 600; color: var(--error);">${transaction.rejectionReason}</span>
+            </div>
+            ` : ''}
+        </div>
+    `;
+
+    // Show Approve/Reject buttons for Approver on ST-02 transactions
+    const userType = localStorage.getItem('userType');
+    if (userType === 'approver' && transaction.status === 'ST-02') {
+        modalFooter.style.display = 'flex';
+    } else {
+        modalFooter.style.display = 'none';
+    }
+
+    modal.style.display = 'flex';
+};

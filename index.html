@@ -35,6 +35,7 @@
                 <a href="#" class="nav-item" data-tab="transactions">
                     <span class="nav-icon">💳</span>
                     <span class="nav-text">التحويلات</span>
+                    <span class="notification-badge" id="notificationBadge" style="display: none;">0</span>
                 </a>
                 <a href="#" class="nav-item" data-tab="calculator">
                     <span class="nav-icon">🧮</span>
@@ -68,7 +69,17 @@
                 <div class="page-header">
                     <h2 class="page-title">لوحة التحكم</h2>
                     <div class="header-meta">
-                        <span class="notification-icon">🔔</span>
+                        <div class="date-filter-group">
+                            <select class="date-filter-select" id="dateFilterType" onchange="applyDateFilter()">
+                                <option value="">جميع الفترات</option>
+                                <option value="today">اليوم</option>
+                                <option value="month">هذا الشهر</option>
+                                <option value="year">هذا العام</option>
+                                <option value="custom">تاريخ محدد</option>
+                            </select>
+                            <input type="date" class="date-filter-input" id="customDate" style="display: none;" onchange="applyDateFilter()">
+                        </div>
+                        <span class="notification-icon" onclick="showNotifications()">🔔</span>
                     </div>
                 </div>
 
@@ -194,6 +205,17 @@
                         <option value="Tamara">تمارا</option>
                     </select>
                     <input type="date" class="filter-date" id="dateFilter" onchange="filterTransactions()">
+                </div>
+
+                <!-- Notifications Section (for Approver) -->
+                <div class="notifications-section" id="notificationsSection" style="display: none;">
+                    <div class="notifications-header">
+                        <h3>🔔 الإشعارات - التحويلات في انتظار الاعتماد</h3>
+                        <button class="btn-text" onclick="markAllAsRead()">وضع علامة مقروء للكل</button>
+                    </div>
+                    <div class="notifications-list" id="notificationsList">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
                 </div>
 
                 <!-- Transactions Table -->
@@ -343,6 +365,14 @@
             </div>
             <div class="modal-body" id="modalBody">
                 <!-- Details will be populated by JavaScript -->
+            </div>
+            <div class="modal-footer" id="modalFooter" style="display: none;">
+                <button class="btn btn-success" onclick="approveTransaction()">
+                    <span>✓</span> اعتماد التحويل
+                </button>
+                <button class="btn btn-danger" onclick="rejectTransaction()">
+                    <span>✗</span> رفض التحويل
+                </button>
             </div>
         </div>
     </div>
