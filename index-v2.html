@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام المدفوعات - مدارس v2.0</title>
+    <link rel="stylesheet" href="styles-v2.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+    <div class="app" id="app">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand">
+                    <svg width="40" height="40" viewBox="0 0 50 50" fill="none">
+                        <rect x="10" y="15" width="8" height="30" fill="#2DD4BF"/>
+                        <rect x="21" y="10" width="8" height="35" fill="#2DD4BF"/>
+                        <rect x="32" y="15" width="8" height="30" fill="#2DD4BF"/>
+                        <rect x="5" y="8" width="40" height="4" fill="#2DD4BF"/>
+                    </svg>
+                    <div class="brand-text">
+                        <h1>مدارس</h1>
+                        <p>madares</p>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="nav" id="navigation">
+                <!-- Navigation items will be rendered by JavaScript -->
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-card">
+                    <div class="user-avatar" id="userAvatar">م</div>
+                    <div class="user-info">
+                        <div class="user-name" id="userName">محمد أحمد</div>
+                        <div class="user-role" id="userRole">مراجع</div>
+                    </div>
+                </div>
+                <button class="logout-btn" id="logoutBtn">
+                    <span>🚪</span>
+                    تسجيل الخروج
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main">
+            <!-- Dashboard View -->
+            <section class="view" id="view-dashboard">
+                <header class="view-header">
+                    <h2>لوحة التحكم</h2>
+                    <div class="view-actions">
+                        <div class="date-filter">
+                            <select id="dateFilterType" class="select">
+                                <option value="">جميع الفترات</option>
+                                <option value="today">اليوم</option>
+                                <option value="month">هذا الشهر</option>
+                                <option value="year">هذا العام</option>
+                                <option value="custom">تاريخ محدد</option>
+                            </select>
+                            <input type="date" id="customDate" class="input" style="display: none;">
+                        </div>
+                        <button class="icon-btn" id="notificationBtn">🔔</button>
+                    </div>
+                </header>
+
+                <!-- Financial Summary -->
+                <div class="summary-grid" id="summaryCards">
+                    <!-- Summary cards will be rendered by JavaScript -->
+                </div>
+
+                <!-- Dashboard Grid -->
+                <div class="dashboard-grid">
+                    <!-- Status Cards -->
+                    <div class="status-panel">
+                        <h3>الملخص الحالي</h3>
+                        <div class="status-list" id="statusList">
+                            <!-- Status cards will be rendered by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Recent Transactions -->
+                    <div class="recent-panel">
+                        <div class="panel-header">
+                            <h3>آخر التحويلات</h3>
+                            <button class="link-btn" data-view="transactions">عرض الكل ←</button>
+                        </div>
+                        <div class="recent-list" id="recentList">
+                            <!-- Recent transactions will be rendered by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Transactions View -->
+            <section class="view" id="view-transactions" style="display: none;">
+                <header class="view-header">
+                    <h2>التحويلات</h2>
+                    <div class="view-actions">
+                        <button class="btn btn-secondary" id="exportBtn">
+                            <span>📥</span> تصدير Excel
+                        </button>
+                        <button class="btn btn-primary" id="reviewBtn">
+                            <span>✓</span> مراجعة المحدد
+                        </button>
+                    </div>
+                </header>
+
+                <!-- Filters -->
+                <div class="filters" id="filters">
+                    <div class="search-input">
+                        <span class="icon">🔍</span>
+                        <input type="text" id="searchInput" placeholder="البحث..." class="input">
+                    </div>
+                    <select id="statusFilter" class="select">
+                        <option value="">حالة التحويل</option>
+                        <option value="ST-01">بانتظار المراجعة</option>
+                        <option value="ST-02">قيد المراجعة</option>
+                        <option value="ST-03">معتمد</option>
+                        <option value="ST-04">تم التحويل</option>
+                        <option value="ST-05">فشل التحويل</option>
+                    </select>
+                    <select id="paymentFilter" class="select">
+                        <option value="">وسيلة الدفع</option>
+                        <option value="Mada">مدى</option>
+                        <option value="Visa">فيزا</option>
+                        <option value="MasterCard">ماستركارد</option>
+                        <option value="Tamara">تمارا</option>
+                    </select>
+                    <input type="date" id="transactionDateFilter" class="input">
+                </div>
+
+                <!-- Notifications Panel (Approver Only) -->
+                <div class="notifications-panel" id="notificationsPanel" style="display: none;">
+                    <div class="panel-header">
+                        <h3>🔔 الإشعارات - التحويلات في انتظار الاعتماد</h3>
+                        <button class="link-btn" id="markAllReadBtn">وضع علامة مقروء للكل</button>
+                    </div>
+                    <div class="notifications-list" id="notificationsList">
+                        <!-- Notifications will be rendered by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Transactions Table -->
+                <div class="table-wrapper">
+                    <table class="table" id="transactionsTable">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" id="selectAll"></th>
+                                <th>رقم المرجعي</th>
+                                <th>وسيلة الدفع</th>
+                                <th>المبلغ الإجمالي</th>
+                                <th>رسوم التنشيط</th>
+                                <th>رسوم المعاملة</th>
+                                <th>صافي المبلغ</th>
+                                <th>المدرسة</th>
+                                <th>IBAN</th>
+                                <th>التاريخ</th>
+                                <th>الحالة</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactionsBody">
+                            <!-- Transactions will be rendered by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Calculator View -->
+            <section class="view" id="view-calculator" style="display: none;">
+                <header class="view-header">
+                    <h2>حاسبة الرسوم</h2>
+                </header>
+
+                <div class="calculator-layout">
+                    <div class="card">
+                        <h3>احسب رسوم التحويل</h3>
+                        <form class="form" id="calculatorForm">
+                            <div class="form-group">
+                                <label>المبلغ الأصلي (ر.س)</label>
+                                <input type="number" id="calcAmount" class="input" placeholder="أدخل المبلغ" min="0" step="0.01">
+                            </div>
+                            <div class="form-group">
+                                <label>وسيلة الدفع</label>
+                                <select id="calcPaymentMethod" class="select">
+                                    <option value="">اختر وسيلة الدفع</option>
+                                    <option value="mada">مدى (Mada) - 0.85%</option>
+                                    <option value="visa">فيزا/ماستركارد - 1.17%</option>
+                                    <option value="tamara">التمويل (Tamara) - 10%</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>نوع العقد</label>
+                                <select id="calcContractType" class="select">
+                                    <option value="">اختر نوع العقد</option>
+                                    <option value="executive">تنفيذي - رسوم 85 ر.س</option>
+                                    <option value="standard">عادي - بدون رسوم</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="calcIsFirstPayment">
+                                    هل هذه أول دفعة للطالب؟
+                                </label>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">احسب الرسوم</button>
+                        </form>
+                    </div>
+
+                    <div class="card">
+                        <h3>نتيجة الحساب</h3>
+                        <div id="calculatorResult" class="result-area">
+                            <p class="empty-state">قم بإدخال البيانات وحساب الرسوم</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Business Rules -->
+                <div class="rules-grid">
+                    <div class="rule-card">
+                        <h4>BR-01: رسوم التنشيط الثابتة</h4>
+                        <p><strong>المبلغ:</strong> 85 ر.س</p>
+                        <p><strong>الشرط:</strong> عقد تنفيذي + أول دفعة</p>
+                        <p><strong>التطبيق:</strong> مرة واحدة لكل طالب</p>
+                    </div>
+                    <div class="rule-card">
+                        <h4>BR-02: رسوم المعاملات</h4>
+                        <p><strong>مدى:</strong> 0.85%</p>
+                        <p><strong>فيزا/ماستركارد:</strong> 1.17%</p>
+                        <p><strong>تمارا:</strong> 10%</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Users View -->
+            <section class="view" id="view-users" style="display: none;">
+                <header class="view-header">
+                    <h2>المستخدمين والصلاحيات</h2>
+                </header>
+
+                <div class="users-grid">
+                    <div class="user-type-card">
+                        <div class="card-header">
+                            <h3>المراجع (Reviewer)</h3>
+                            <span class="badge badge-reviewer">Reviewer</span>
+                        </div>
+                        <p>مسؤول عن مراجعة التحويلات والتحقق من دقتها</p>
+                        <h4>الصلاحيات:</h4>
+                        <ul class="permissions">
+                            <li><span class="icon-check">✓</span> عرض التحويلات والتفاصيل</li>
+                            <li><span class="icon-check">✓</span> تغيير الحالة من ST-01 إلى ST-02</li>
+                            <li><span class="icon-check">✓</span> البحث والتصفية</li>
+                            <li><span class="icon-cross">✗</span> اعتماد التحويلات</li>
+                        </ul>
+                    </div>
+                    <div class="user-type-card">
+                        <div class="card-header">
+                            <h3>المعتمد (Approver)</h3>
+                            <span class="badge badge-approver">Approver</span>
+                        </div>
+                        <p>مسؤول عن الاعتماد النهائي للتحويلات</p>
+                        <h4>الصلاحيات:</h4>
+                        <ul class="permissions">
+                            <li><span class="icon-check">✓</span> عرض التحويلات والتفاصيل</li>
+                            <li><span class="icon-check">✓</span> تغيير الحالة من ST-02 إلى ST-03</li>
+                            <li><span class="icon-check">✓</span> اعتماد/رفض التحويلات</li>
+                            <li><span class="icon-cross">✗</span> تغيير الحالة من ST-01 إلى ST-02</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="detailsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>تفاصيل التحويل</h3>
+                <button class="close-btn" id="closeModalBtn">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Details will be rendered by JavaScript -->
+            </div>
+            <div class="modal-footer" id="modalFooter" style="display: none;">
+                <button class="btn btn-success" id="approveBtn">
+                    <span>✓</span> اعتماد
+                </button>
+                <button class="btn btn-danger" id="rejectBtn">
+                    <span>✗</span> رفض
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>
