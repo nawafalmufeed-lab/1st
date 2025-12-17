@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام إدارة مدفوعات المدارس - Madares Payment System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage" class="page active">
+        <div class="login-container">
+            <div class="login-card">
+                <div class="logo">
+                    <h1 data-ar="نظام إدارة المدفوعات" data-en="Payment Management System">نظام إدارة المدفوعات</h1>
+                    <p data-ar="منصة مدارس" data-en="Madares Platform">منصة مدارس</p>
+                </div>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label data-ar="اسم المستخدم" data-en="Username">اسم المستخدم</label>
+                        <input type="text" id="username" required autocomplete="username">
+                    </div>
+                    <div class="form-group">
+                        <label data-ar="كلمة المرور" data-en="Password">كلمة المرور</label>
+                        <input type="password" id="password" required autocomplete="current-password">
+                    </div>
+                    <div id="loginError" class="error-message"></div>
+                    <button type="submit" class="btn btn-primary" data-ar="تسجيل الدخول" data-en="Login">تسجيل الدخول</button>
+                </form>
+                <div class="demo-credentials">
+                    <p data-ar="بيانات تجريبية:" data-en="Demo Credentials:">بيانات تجريبية:</p>
+                    <small data-ar="مراجع: reviewer / 123456" data-en="Reviewer: reviewer / 123456">مراجع: reviewer / 123456</small><br>
+                    <small data-ar="معتمد: approver / 123456" data-en="Approver: approver / 123456">معتمد: approver / 123456</small>
+                </div>
+                <div class="language-switch">
+                    <button id="langToggle" class="btn-lang">English</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="mainApp" class="page">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2 data-ar="مدارس" data-en="Madares">مدارس</h2>
+                <button id="sidebarToggle" class="sidebar-toggle">☰</button>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#" data-page="dashboard" class="nav-item active">
+                    <span class="icon">📊</span>
+                    <span data-ar="لوحة التحكم" data-en="Dashboard">لوحة التحكم</span>
+                </a>
+                <a href="#" data-page="transactions" class="nav-item">
+                    <span class="icon">💳</span>
+                    <span data-ar="المعاملات" data-en="Transactions">المعاملات</span>
+                </a>
+                <a href="#" data-page="notifications" class="nav-item">
+                    <span class="icon">🔔</span>
+                    <span data-ar="الإشعارات" data-en="Notifications">الإشعارات</span>
+                    <span class="notification-badge" id="notificationBadge">0</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar">👤</div>
+                    <div class="user-details">
+                        <div class="user-name" id="userName"></div>
+                        <div class="user-role" id="userRole"></div>
+                    </div>
+                </div>
+                <button id="langToggleApp" class="btn-lang-app">English</button>
+                <button id="logoutBtn" class="btn-logout" data-ar="تسجيل الخروج" data-en="Logout">تسجيل الخروج</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Page -->
+            <div id="dashboardPage" class="content-page active">
+                <header class="page-header">
+                    <h1 data-ar="لوحة التحكم" data-en="Dashboard">لوحة التحكم</h1>
+                    <button class="btn btn-export" id="exportDashboard">
+                        <span data-ar="📥 تصدير إلى Excel" data-en="📥 Export to Excel">📥 تصدير إلى Excel</span>
+                    </button>
+                </header>
+
+                <!-- Filters -->
+                <div class="filters-section">
+                    <div class="filter-group">
+                        <label data-ar="الفترة الزمنية" data-en="Time Period">الفترة الزمنية</label>
+                        <select id="dashboardPeriod" class="filter-input">
+                            <option value="all" data-ar="الكل" data-en="All">الكل</option>
+                            <option value="today" data-ar="اليوم" data-en="Today">اليوم</option>
+                            <option value="month" data-ar="هذا الشهر" data-en="This Month">هذا الشهر</option>
+                            <option value="year" data-ar="هذا العام" data-en="This Year">هذا العام</option>
+                            <option value="custom" data-ar="فترة مخصصة" data-en="Custom Range">فترة مخصصة</option>
+                        </select>
+                    </div>
+                    <div class="filter-group" id="customDateRange" style="display: none;">
+                        <label data-ar="من تاريخ" data-en="From Date">من تاريخ</label>
+                        <input type="date" id="dashboardFromDate" class="filter-input">
+                    </div>
+                    <div class="filter-group" id="customDateRangeTo" style="display: none;">
+                        <label data-ar="إلى تاريخ" data-en="To Date">إلى تاريخ</label>
+                        <input type="date" id="dashboardToDate" class="filter-input">
+                    </div>
+                    <button class="btn btn-primary" id="applyDashboardFilter" data-ar="تطبيق" data-en="Apply">تطبيق</button>
+                </div>
+
+                <!-- Statistics Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card stat-primary">
+                        <div class="stat-icon">💰</div>
+                        <div class="stat-content">
+                            <div class="stat-label" data-ar="إجمالي المبالغ" data-en="Total Amount">إجمالي المبالغ</div>
+                            <div class="stat-value" id="totalAmount">0</div>
+                        </div>
+                    </div>
+                    <div class="stat-card stat-warning">
+                        <div class="stat-icon">📄</div>
+                        <div class="stat-content">
+                            <div class="stat-label" data-ar="رسوم العقد التنفيذي" data-en="Executive Contract Fees">رسوم العقد التنفيذي</div>
+                            <div class="stat-value" id="contractFees">0</div>
+                        </div>
+                    </div>
+                    <div class="stat-card stat-info">
+                        <div class="stat-icon">🏦</div>
+                        <div class="stat-content">
+                            <div class="stat-label" data-ar="رسوم المعاملات البنكية" data-en="Bank Transaction Fees">رسوم المعاملات البنكية</div>
+                            <div class="stat-value" id="bankFees">0</div>
+                        </div>
+                    </div>
+                    <div class="stat-card stat-success">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-content">
+                            <div class="stat-label" data-ar="صافي المبلغ" data-en="Net Amount">صافي المبلغ</div>
+                            <div class="stat-value" id="netAmount">0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Transactions Page -->
+            <div id="transactionsPage" class="content-page">
+                <header class="page-header">
+                    <h1 data-ar="المعاملات" data-en="Transactions">المعاملات</h1>
+                    <button class="btn btn-export" id="exportTransactions">
+                        <span data-ar="📥 تصدير إلى Excel" data-en="📥 Export to Excel">📥 تصدير إلى Excel</span>
+                    </button>
+                </header>
+
+                <!-- Transaction Filters -->
+                <div class="filters-section">
+                    <div class="filter-group">
+                        <label data-ar="الحالة" data-en="Status">الحالة</label>
+                        <select id="statusFilter" class="filter-input">
+                            <option value="all" data-ar="الكل" data-en="All">الكل</option>
+                            <option value="ST-01" data-ar="ST-01: في انتظار المراجعة" data-en="ST-01: Awaiting Review">ST-01: في انتظار المراجعة</option>
+                            <option value="ST-02" data-ar="ST-02: قيد المراجعة" data-en="ST-02: Under Review">ST-02: قيد المراجعة</option>
+                            <option value="ST-03" data-ar="ST-03: معتمد" data-en="ST-03: Approved">ST-03: معتمد</option>
+                            <option value="ST-04" data-ar="ST-04: تم التحويل" data-en="ST-04: Transferred">ST-04: تم التحويل</option>
+                            <option value="ST-05" data-ar="ST-05: فشل التحويل" data-en="ST-05: Transfer Failed">ST-05: فشل التحويل</option>
+                            <option value="ST-06" data-ar="ST-06: مكتمل" data-en="ST-06: Completed">ST-06: مكتمل</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label data-ar="طريقة الدفع" data-en="Payment Method">طريقة الدفع</label>
+                        <select id="paymentMethodFilter" class="filter-input">
+                            <option value="all" data-ar="الكل" data-en="All">الكل</option>
+                            <option value="mada" data-ar="مدى" data-en="Mada">مدى</option>
+                            <option value="visa" data-ar="فيزا" data-en="Visa">فيزا</option>
+                            <option value="mastercard" data-ar="ماستركارد" data-en="Mastercard">ماستركارد</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label data-ar="التاريخ" data-en="Date">التاريخ</label>
+                        <input type="date" id="dateFilter" class="filter-input">
+                    </div>
+                    <div class="filter-group">
+                        <label data-ar="بحث" data-en="Search">بحث</label>
+                        <input type="text" id="searchFilter" class="filter-input" placeholder="..." data-ar-placeholder="اسم المدرسة..." data-en-placeholder="School name...">
+                    </div>
+                    <button class="btn btn-primary" id="applyTransactionFilters" data-ar="تطبيق" data-en="Apply">تطبيق</button>
+                    <button class="btn btn-secondary" id="clearFilters" data-ar="مسح" data-en="Clear">مسح</button>
+                </div>
+
+                <!-- Transactions Table -->
+                <div class="table-container">
+                    <table class="transactions-table" id="transactionsTable">
+                        <thead>
+                            <tr>
+                                <th data-ar="اسم المدرسة" data-en="School Name">اسم المدرسة</th>
+                                <th data-ar="رقم المرجع" data-en="Reference Number">رقم المرجع</th>
+                                <th data-ar="المبلغ الأصلي" data-en="Original Amount">المبلغ الأصلي</th>
+                                <th data-ar="رسوم العقد" data-en="Contract Fees">رسوم العقد</th>
+                                <th data-ar="رسوم البنك" data-en="Bank Fees">رسوم البنك</th>
+                                <th data-ar="صافي المبلغ" data-en="Net Amount">صافي المبلغ</th>
+                                <th data-ar="التاريخ" data-en="Date">التاريخ</th>
+                                <th data-ar="طريقة الدفع" data-en="Payment Method">طريقة الدفع</th>
+                                <th data-ar="الحالة" data-en="Status">الحالة</th>
+                                <th data-ar="الإجراءات" data-en="Actions">الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactionsTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Notifications Page -->
+            <div id="notificationsPage" class="content-page">
+                <header class="page-header">
+                    <h1 data-ar="الإشعارات" data-en="Notifications">الإشعارات</h1>
+                </header>
+
+                <!-- Notification Stats (for Approver) -->
+                <div id="approverNotificationStats" class="stats-grid" style="display: none;">
+                    <div class="stat-card stat-warning">
+                        <div class="stat-icon">⏳</div>
+                        <div class="stat-content">
+                            <div class="stat-label" data-ar="في انتظار الاعتماد" data-en="Pending Approval">في انتظار الاعتماد</div>
+                            <div class="stat-value" id="pendingCount">0</div>
+                        </div>
+                    </div>
+                    <div class="stat-card stat-success">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-content">
+                            <div class="stat-label" data-ar="معتمد اليوم" data-en="Approved Today">معتمد اليوم</div>
+                            <div class="stat-value" id="approvedTodayCount">0</div>
+                        </div>
+                    </div>
+                    <div class="stat-card stat-danger">
+                        <div class="stat-icon">❌</div>
+                        <div class="stat-content">
+                            <div class="stat-label" data-ar="مرفوض اليوم" data-en="Rejected Today">مرفوض اليوم</div>
+                            <div class="stat-value" id="rejectedTodayCount">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Approver Notifications -->
+                <div id="approverNotifications" style="display: none;">
+                    <h2 data-ar="معاملات قيد المراجعة (ST-02)" data-en="Pending Transactions (ST-02)">معاملات قيد المراجعة (ST-02)</h2>
+                    <div id="pendingTransactionsList" class="notifications-grid"></div>
+                </div>
+
+                <!-- Reviewer Notifications -->
+                <div id="reviewerNotifications" style="display: none;">
+                    <h2 data-ar="المعاملات المرفوضة" data-en="Rejected Transactions">المعاملات المرفوضة</h2>
+                    <div id="rejectedTransactionsList" class="notifications-grid"></div>
+
+                    <h2 data-ar="المعاملات المعتمدة" data-en="Approved Transactions">المعاملات المعتمدة</h2>
+                    <div id="approvedTransactionsList" class="notifications-grid"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Transaction Details Modal -->
+    <div id="detailsModal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2 data-ar="تفاصيل المعاملة" data-en="Transaction Details">تفاصيل المعاملة</h2>
+                <button class="modal-close" onclick="closeModal('detailsModal')">&times;</button>
+            </div>
+            <div class="modal-body" id="detailsModalBody">
+            </div>
+        </div>
+    </div>
+
+    <!-- Reject Modal -->
+    <div id="rejectModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 data-ar="رفض المعاملة" data-en="Reject Transaction">رفض المعاملة</h2>
+                <button class="modal-close" onclick="closeModal('rejectModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label data-ar="سبب الرفض (مطلوب)" data-en="Rejection Reason (Required)">سبب الرفض (مطلوب)</label>
+                    <textarea id="rejectionReason" rows="4" class="form-control" required></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-danger" id="confirmReject" data-ar="تأكيد الرفض" data-en="Confirm Reject">تأكيد الرفض</button>
+                    <button class="btn btn-secondary" onclick="closeModal('rejectModal')" data-ar="إلغاء" data-en="Cancel">إلغاء</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Modal -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 data-ar="تأكيد العملية" data-en="Confirm Action">تأكيد العملية</h2>
+                <button class="modal-close" onclick="closeModal('confirmModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage"></p>
+                <div class="modal-actions">
+                    <button class="btn btn-primary" id="confirmAction" data-ar="تأكيد" data-en="Confirm">تأكيد</button>
+                    <button class="btn btn-secondary" onclick="closeModal('confirmModal')" data-ar="إلغاء" data-en="Cancel">إلغاء</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
