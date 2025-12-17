@@ -7,106 +7,136 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Navigation State Control (CSS-only) -->
+    <input type="radio" name="page" id="page-login" checked>
+    <input type="radio" name="page" id="page-dashboard">
+    <input type="radio" name="page" id="page-transactions">
+    <input type="radio" name="page" id="page-notifications-approver">
+    <input type="radio" name="page" id="page-notifications-reviewer">
+
+    <!-- User Role Control -->
+    <input type="radio" name="role" id="role-approver" checked>
+    <input type="radio" name="role" id="role-reviewer">
+
     <!-- Login Page -->
-    <div id="loginPage" class="page active">
-        <div class="login-container">
+    <div class="page-container" id="login-page">
+        <div class="login-wrapper">
             <div class="login-card">
                 <div class="logo">
-                    <h1 data-ar="نظام إدارة المدفوعات" data-en="Payment Management System">نظام إدارة المدفوعات</h1>
-                    <p data-ar="منصة مدارس" data-en="Madares Platform">منصة مدارس</p>
+                    <h1>نظام إدارة المدفوعات</h1>
+                    <p>منصة مدارس | Madares Platform</p>
                 </div>
-                <form id="loginForm">
+
+                <div class="login-form">
                     <div class="form-group">
-                        <label data-ar="اسم المستخدم" data-en="Username">اسم المستخدم</label>
-                        <input type="text" id="username" required autocomplete="username">
+                        <label>اسم المستخدم</label>
+                        <input type="text" placeholder="username" value="" readonly>
                     </div>
+
                     <div class="form-group">
-                        <label data-ar="كلمة المرور" data-en="Password">كلمة المرور</label>
-                        <input type="password" id="password" required autocomplete="current-password">
+                        <label>كلمة المرور</label>
+                        <input type="password" placeholder="••••••" readonly>
                     </div>
-                    <div id="loginError" class="error-message"></div>
-                    <button type="submit" class="btn btn-primary" data-ar="تسجيل الدخول" data-en="Login">تسجيل الدخول</button>
-                </form>
-                <div class="demo-credentials">
-                    <p data-ar="بيانات تجريبية:" data-en="Demo Credentials:">بيانات تجريبية:</p>
-                    <small data-ar="مراجع: reviewer / 123456" data-en="Reviewer: reviewer / 123456">مراجع: reviewer / 123456</small><br>
-                    <small data-ar="معتمد: approver / 123456" data-en="Approver: approver / 123456">معتمد: approver / 123456</small>
-                </div>
-                <div class="language-switch">
-                    <button id="langToggle" class="btn-lang">English</button>
+
+                    <div class="demo-credentials">
+                        <p><strong>بيانات تجريبية للنظام:</strong></p>
+                        <div class="credential-box">
+                            <strong>🔵 المعتمد (Approver)</strong>
+                            <p>Username: <code>approver</code> | Password: <code>123456</code></p>
+                            <label for="role-approver" class="btn-login btn-approver">تسجيل دخول كمعتمد</label>
+                        </div>
+                        <div class="credential-box">
+                            <strong>🟢 المراجع (Reviewer)</strong>
+                            <p>Username: <code>reviewer</code> | Password: <code>123456</code></p>
+                            <label for="role-reviewer" class="btn-login btn-reviewer">تسجيل دخول كمراجع</label>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Main App -->
-    <div id="mainApp" class="page">
+    <!-- Main Application -->
+    <div class="page-container" id="app-page">
         <!-- Sidebar -->
-        <aside class="sidebar" id="sidebar">
+        <aside class="sidebar">
             <div class="sidebar-header">
-                <h2 data-ar="مدارس" data-en="Madares">مدارس</h2>
-                <button id="sidebarToggle" class="sidebar-toggle">☰</button>
+                <h2>مدارس</h2>
+                <span class="logo-icon">🎓</span>
             </div>
+
             <nav class="sidebar-nav">
-                <a href="#" data-page="dashboard" class="nav-item active">
+                <label for="page-dashboard" class="nav-item">
                     <span class="icon">📊</span>
-                    <span data-ar="لوحة التحكم" data-en="Dashboard">لوحة التحكم</span>
-                </a>
-                <a href="#" data-page="transactions" class="nav-item">
+                    <span class="text">لوحة التحكم</span>
+                </label>
+
+                <label for="page-transactions" class="nav-item">
                     <span class="icon">💳</span>
-                    <span data-ar="المعاملات" data-en="Transactions">المعاملات</span>
-                </a>
-                <a href="#" data-page="notifications" class="nav-item">
+                    <span class="text">المعاملات</span>
+                </label>
+
+                <!-- Approver sees approver notifications -->
+                <label for="page-notifications-approver" class="nav-item approver-only">
                     <span class="icon">🔔</span>
-                    <span data-ar="الإشعارات" data-en="Notifications">الإشعارات</span>
-                    <span class="notification-badge" id="notificationBadge">0</span>
-                </a>
+                    <span class="text">الإشعارات</span>
+                    <span class="badge">5</span>
+                </label>
+
+                <!-- Reviewer sees reviewer notifications -->
+                <label for="page-notifications-reviewer" class="nav-item reviewer-only">
+                    <span class="icon">🔔</span>
+                    <span class="text">الإشعارات</span>
+                    <span class="badge">3</span>
+                </label>
             </nav>
+
             <div class="sidebar-footer">
                 <div class="user-info">
                     <div class="user-avatar">👤</div>
                     <div class="user-details">
-                        <div class="user-name" id="userName"></div>
-                        <div class="user-role" id="userRole"></div>
+                        <div class="user-name approver-only">محمد العتيبي</div>
+                        <div class="user-name reviewer-only">أحمد السالم</div>
+                        <div class="user-role approver-only">معتمد النظام</div>
+                        <div class="user-role reviewer-only">مراجع النظام</div>
                     </div>
                 </div>
-                <button id="langToggleApp" class="btn-lang-app">English</button>
-                <button id="logoutBtn" class="btn-logout" data-ar="تسجيل الخروج" data-en="Logout">تسجيل الخروج</button>
+                <label for="page-login" class="btn-logout">تسجيل الخروج</label>
             </div>
         </aside>
 
-        <!-- Main Content -->
+        <!-- Main Content Area -->
         <main class="main-content">
+
             <!-- Dashboard Page -->
-            <div id="dashboardPage" class="content-page active">
+            <div class="content-page" id="dashboard-content">
                 <header class="page-header">
-                    <h1 data-ar="لوحة التحكم" data-en="Dashboard">لوحة التحكم</h1>
-                    <button class="btn btn-export" id="exportDashboard">
-                        <span data-ar="📥 تصدير إلى Excel" data-en="📥 Export to Excel">📥 تصدير إلى Excel</span>
-                    </button>
+                    <h1>لوحة التحكم</h1>
+                    <div class="header-actions">
+                        <button class="btn btn-export">📥 تصدير إلى Excel</button>
+                    </div>
                 </header>
 
                 <!-- Filters -->
                 <div class="filters-section">
                     <div class="filter-group">
-                        <label data-ar="الفترة الزمنية" data-en="Time Period">الفترة الزمنية</label>
-                        <select id="dashboardPeriod" class="filter-input">
-                            <option value="all" data-ar="الكل" data-en="All">الكل</option>
-                            <option value="today" data-ar="اليوم" data-en="Today">اليوم</option>
-                            <option value="month" data-ar="هذا الشهر" data-en="This Month">هذا الشهر</option>
-                            <option value="year" data-ar="هذا العام" data-en="This Year">هذا العام</option>
-                            <option value="custom" data-ar="فترة مخصصة" data-en="Custom Range">فترة مخصصة</option>
+                        <label>الفترة الزمنية</label>
+                        <select class="filter-input">
+                            <option>هذا الشهر</option>
+                            <option>اليوم</option>
+                            <option>هذا العام</option>
+                            <option>فترة مخصصة</option>
                         </select>
                     </div>
-                    <div class="filter-group" id="customDateRange" style="display: none;">
-                        <label data-ar="من تاريخ" data-en="From Date">من تاريخ</label>
-                        <input type="date" id="dashboardFromDate" class="filter-input">
+                    <div class="filter-group">
+                        <label>من تاريخ</label>
+                        <input type="date" class="filter-input" value="2024-12-01">
                     </div>
-                    <div class="filter-group" id="customDateRangeTo" style="display: none;">
-                        <label data-ar="إلى تاريخ" data-en="To Date">إلى تاريخ</label>
-                        <input type="date" id="dashboardToDate" class="filter-input">
+                    <div class="filter-group">
+                        <label>إلى تاريخ</label>
+                        <input type="date" class="filter-input" value="2024-12-31">
                     </div>
-                    <button class="btn btn-primary" id="applyDashboardFilter" data-ar="تطبيق" data-en="Apply">تطبيق</button>
+                    <button class="btn btn-primary">تطبيق</button>
                 </div>
 
                 <!-- Statistics Cards -->
@@ -114,202 +144,753 @@
                     <div class="stat-card stat-primary">
                         <div class="stat-icon">💰</div>
                         <div class="stat-content">
-                            <div class="stat-label" data-ar="إجمالي المبالغ" data-en="Total Amount">إجمالي المبالغ</div>
-                            <div class="stat-value" id="totalAmount">0</div>
+                            <div class="stat-label">إجمالي المبالغ</div>
+                            <div class="stat-value">2,847,500.00 ر.س</div>
+                            <div class="stat-change positive">+12.5% من الشهر الماضي</div>
                         </div>
                     </div>
+
                     <div class="stat-card stat-warning">
                         <div class="stat-icon">📄</div>
                         <div class="stat-content">
-                            <div class="stat-label" data-ar="رسوم العقد التنفيذي" data-en="Executive Contract Fees">رسوم العقد التنفيذي</div>
-                            <div class="stat-value" id="contractFees">0</div>
+                            <div class="stat-label">رسوم العقد التنفيذي</div>
+                            <div class="stat-value">71,187.50 ر.س</div>
+                            <div class="stat-change">2.5% من الإجمالي</div>
                         </div>
                     </div>
+
                     <div class="stat-card stat-info">
                         <div class="stat-icon">🏦</div>
                         <div class="stat-content">
-                            <div class="stat-label" data-ar="رسوم المعاملات البنكية" data-en="Bank Transaction Fees">رسوم المعاملات البنكية</div>
-                            <div class="stat-value" id="bankFees">0</div>
+                            <div class="stat-label">رسوم المعاملات البنكية</div>
+                            <div class="stat-value">42,712.50 ر.س</div>
+                            <div class="stat-change">1.5% من الإجمالي</div>
                         </div>
                     </div>
+
                     <div class="stat-card stat-success">
                         <div class="stat-icon">✅</div>
                         <div class="stat-content">
-                            <div class="stat-label" data-ar="صافي المبلغ" data-en="Net Amount">صافي المبلغ</div>
-                            <div class="stat-value" id="netAmount">0</div>
+                            <div class="stat-label">صافي المبلغ</div>
+                            <div class="stat-value">2,733,600.00 ر.س</div>
+                            <div class="stat-change positive">المبلغ بعد الخصومات</div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Transactions Page -->
-            <div id="transactionsPage" class="content-page">
-                <header class="page-header">
-                    <h1 data-ar="المعاملات" data-en="Transactions">المعاملات</h1>
-                    <button class="btn btn-export" id="exportTransactions">
-                        <span data-ar="📥 تصدير إلى Excel" data-en="📥 Export to Excel">📥 تصدير إلى Excel</span>
-                    </button>
-                </header>
-
-                <!-- Transaction Filters -->
-                <div class="filters-section">
-                    <div class="filter-group">
-                        <label data-ar="الحالة" data-en="Status">الحالة</label>
-                        <select id="statusFilter" class="filter-input">
-                            <option value="all" data-ar="الكل" data-en="All">الكل</option>
-                            <option value="ST-01" data-ar="ST-01: في انتظار المراجعة" data-en="ST-01: Awaiting Review">ST-01: في انتظار المراجعة</option>
-                            <option value="ST-02" data-ar="ST-02: قيد المراجعة" data-en="ST-02: Under Review">ST-02: قيد المراجعة</option>
-                            <option value="ST-03" data-ar="ST-03: معتمد" data-en="ST-03: Approved">ST-03: معتمد</option>
-                            <option value="ST-04" data-ar="ST-04: تم التحويل" data-en="ST-04: Transferred">ST-04: تم التحويل</option>
-                            <option value="ST-05" data-ar="ST-05: فشل التحويل" data-en="ST-05: Transfer Failed">ST-05: فشل التحويل</option>
-                            <option value="ST-06" data-ar="ST-06: مكتمل" data-en="ST-06: Completed">ST-06: مكتمل</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <label data-ar="طريقة الدفع" data-en="Payment Method">طريقة الدفع</label>
-                        <select id="paymentMethodFilter" class="filter-input">
-                            <option value="all" data-ar="الكل" data-en="All">الكل</option>
-                            <option value="mada" data-ar="مدى" data-en="Mada">مدى</option>
-                            <option value="visa" data-ar="فيزا" data-en="Visa">فيزا</option>
-                            <option value="mastercard" data-ar="ماستركارد" data-en="Mastercard">ماستركارد</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <label data-ar="التاريخ" data-en="Date">التاريخ</label>
-                        <input type="date" id="dateFilter" class="filter-input">
-                    </div>
-                    <div class="filter-group">
-                        <label data-ar="بحث" data-en="Search">بحث</label>
-                        <input type="text" id="searchFilter" class="filter-input" placeholder="..." data-ar-placeholder="اسم المدرسة..." data-en-placeholder="School name...">
-                    </div>
-                    <button class="btn btn-primary" id="applyTransactionFilters" data-ar="تطبيق" data-en="Apply">تطبيق</button>
-                    <button class="btn btn-secondary" id="clearFilters" data-ar="مسح" data-en="Clear">مسح</button>
-                </div>
-
-                <!-- Transactions Table -->
-                <div class="table-container">
-                    <table class="transactions-table" id="transactionsTable">
+                <!-- Summary Table -->
+                <div class="summary-section">
+                    <h2>ملخص المعاملات حسب الحالة</h2>
+                    <table class="summary-table">
                         <thead>
                             <tr>
-                                <th data-ar="اسم المدرسة" data-en="School Name">اسم المدرسة</th>
-                                <th data-ar="رقم المرجع" data-en="Reference Number">رقم المرجع</th>
-                                <th data-ar="المبلغ الأصلي" data-en="Original Amount">المبلغ الأصلي</th>
-                                <th data-ar="رسوم العقد" data-en="Contract Fees">رسوم العقد</th>
-                                <th data-ar="رسوم البنك" data-en="Bank Fees">رسوم البنك</th>
-                                <th data-ar="صافي المبلغ" data-en="Net Amount">صافي المبلغ</th>
-                                <th data-ar="التاريخ" data-en="Date">التاريخ</th>
-                                <th data-ar="طريقة الدفع" data-en="Payment Method">طريقة الدفع</th>
-                                <th data-ar="الحالة" data-en="Status">الحالة</th>
-                                <th data-ar="الإجراءات" data-en="Actions">الإجراءات</th>
+                                <th>الحالة</th>
+                                <th>عدد المعاملات</th>
+                                <th>إجمالي المبلغ</th>
+                                <th>صافي المبلغ</th>
                             </tr>
                         </thead>
-                        <tbody id="transactionsTableBody">
+                        <tbody>
+                            <tr>
+                                <td><span class="status-badge status-ST-01">ST-01: في انتظار المراجعة</span></td>
+                                <td>8</td>
+                                <td>487,300.00 ر.س</td>
+                                <td>468,128.00 ر.س</td>
+                            </tr>
+                            <tr>
+                                <td><span class="status-badge status-ST-02">ST-02: قيد المراجعة</span></td>
+                                <td>5</td>
+                                <td>325,800.00 ر.س</td>
+                                <td>312,988.00 ر.س</td>
+                            </tr>
+                            <tr>
+                                <td><span class="status-badge status-ST-03">ST-03: معتمد</span></td>
+                                <td>12</td>
+                                <td>892,150.00 ر.س</td>
+                                <td>857,064.00 ر.س</td>
+                            </tr>
+                            <tr>
+                                <td><span class="status-badge status-ST-04">ST-04: تم التحويل</span></td>
+                                <td>18</td>
+                                <td>1,042,250.00 ر.س</td>
+                                <td>1,001,040.00 ر.س</td>
+                            </tr>
+                            <tr>
+                                <td><span class="status-badge status-ST-06">ST-06: مكتمل</span></td>
+                                <td>7</td>
+                                <td>100,000.00 ر.س</td>
+                                <td>94,380.00 ر.س</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- Notifications Page -->
-            <div id="notificationsPage" class="content-page">
+            <!-- Transactions Page -->
+            <div class="content-page" id="transactions-content">
                 <header class="page-header">
-                    <h1 data-ar="الإشعارات" data-en="Notifications">الإشعارات</h1>
+                    <h1>إدارة المعاملات</h1>
+                    <div class="header-actions">
+                        <button class="btn btn-export">📥 تصدير إلى Excel</button>
+                    </div>
                 </header>
 
-                <!-- Notification Stats (for Approver) -->
-                <div id="approverNotificationStats" class="stats-grid" style="display: none;">
+                <!-- Transaction Filters -->
+                <div class="filters-section">
+                    <div class="filter-group">
+                        <label>الحالة</label>
+                        <select class="filter-input">
+                            <option>الكل</option>
+                            <option>ST-01: في انتظار المراجعة</option>
+                            <option>ST-02: قيد المراجعة</option>
+                            <option>ST-03: معتمد</option>
+                            <option>ST-04: تم التحويل</option>
+                            <option>ST-05: فشل التحويل</option>
+                            <option>ST-06: مكتمل</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>طريقة الدفع</label>
+                        <select class="filter-input">
+                            <option>الكل</option>
+                            <option>مدى</option>
+                            <option>فيزا</option>
+                            <option>ماستركارد</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>التاريخ</label>
+                        <input type="date" class="filter-input" value="2024-12-15">
+                    </div>
+                    <div class="filter-group">
+                        <label>بحث</label>
+                        <input type="text" class="filter-input" placeholder="اسم المدرسة...">
+                    </div>
+                    <button class="btn btn-primary">بحث</button>
+                    <button class="btn btn-secondary">مسح</button>
+                </div>
+
+                <!-- Transactions Table -->
+                <div class="table-container">
+                    <table class="transactions-table">
+                        <thead>
+                            <tr>
+                                <th>اسم المدرسة</th>
+                                <th>رقم المرجع</th>
+                                <th>المبلغ الأصلي</th>
+                                <th>رسوم العقد</th>
+                                <th>رسوم البنك</th>
+                                <th>صافي المبلغ</th>
+                                <th>التاريخ</th>
+                                <th>طريقة الدفع</th>
+                                <th>الحالة</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>مدرسة النور الأهلية</td>
+                                <td>REF-A8F2E9C1</td>
+                                <td>45,800.00 ر.س</td>
+                                <td>1,145.00 ر.س</td>
+                                <td>687.00 ر.س</td>
+                                <td class="highlight">43,968.00 ر.س</td>
+                                <td>2024-12-15</td>
+                                <td><span class="payment-badge mada">مدى</span></td>
+                                <td><span class="status-badge status-ST-01">ST-01</span></td>
+                                <td>
+                                    <button class="btn-sm btn-primary">عرض</button>
+                                    <button class="btn-sm btn-success reviewer-only">مراجعة</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>مدرسة المعرفة العالمية</td>
+                                <td>REF-B7D3F1A8</td>
+                                <td>62,500.00 ر.س</td>
+                                <td>1,562.50 ر.س</td>
+                                <td>937.50 ر.س</td>
+                                <td class="highlight">60,000.00 ر.س</td>
+                                <td>2024-12-14</td>
+                                <td><span class="payment-badge visa">فيزا</span></td>
+                                <td><span class="status-badge status-ST-02">ST-02</span></td>
+                                <td>
+                                    <button class="btn-sm btn-primary">عرض</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>مدرسة الرياض النموذجية</td>
+                                <td>REF-C9E4A2B7</td>
+                                <td>38,200.00 ر.س</td>
+                                <td>955.00 ر.س</td>
+                                <td>573.00 ر.س</td>
+                                <td class="highlight">36,672.00 ر.س</td>
+                                <td>2024-12-13</td>
+                                <td><span class="payment-badge mastercard">ماستركارد</span></td>
+                                <td><span class="status-badge status-ST-03">ST-03</span></td>
+                                <td>
+                                    <button class="btn-sm btn-primary">عرض</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>مدرسة الفيصلية الأهلية</td>
+                                <td>REF-D1F8B3C9</td>
+                                <td>55,000.00 ر.س</td>
+                                <td>1,375.00 ر.س</td>
+                                <td>825.00 ر.س</td>
+                                <td class="highlight">52,800.00 ر.س</td>
+                                <td>2024-12-12</td>
+                                <td><span class="payment-badge mada">مدى</span></td>
+                                <td><span class="status-badge status-ST-01">ST-01</span></td>
+                                <td>
+                                    <button class="btn-sm btn-primary">عرض</button>
+                                    <button class="btn-sm btn-success reviewer-only">مراجعة</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>مدرسة دار العلوم</td>
+                                <td>REF-E2A9C4D1</td>
+                                <td>71,300.00 ر.س</td>
+                                <td>1,782.50 ر.س</td>
+                                <td>1,069.50 ر.س</td>
+                                <td class="highlight">68,448.00 ر.س</td>
+                                <td>2024-12-11</td>
+                                <td><span class="payment-badge visa">فيزا</span></td>
+                                <td><span class="status-badge status-ST-04">ST-04</span></td>
+                                <td>
+                                    <button class="btn-sm btn-primary">عرض</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>مدرسة الأندلس العالمية</td>
+                                <td>REF-F3B1D5E2</td>
+                                <td>48,600.00 ر.س</td>
+                                <td>1,215.00 ر.س</td>
+                                <td>729.00 ر.س</td>
+                                <td class="highlight">46,656.00 ر.س</td>
+                                <td>2024-12-10</td>
+                                <td><span class="payment-badge mada">مدى</span></td>
+                                <td><span class="status-badge status-ST-02">ST-02</span></td>
+                                <td>
+                                    <button class="btn-sm btn-primary">عرض</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>مدرسة الحصان النموذجية</td>
+                                <td>REF-G4C2E6F3</td>
+                                <td>59,800.00 ر.س</td>
+                                <td>1,495.00 ر.س</td>
+                                <td>897.00 ر.س</td>
+                                <td class="highlight">57,408.00 ر.س</td>
+                                <td>2024-12-09</td>
+                                <td><span class="payment-badge mastercard">ماستركارد</span></td>
+                                <td><span class="status-badge status-ST-03">ST-03</span></td>
+                                <td>
+                                    <button class="btn-sm btn-primary">عرض</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>مدرسة المنارات</td>
+                                <td>REF-H5D3F7G4</td>
+                                <td>42,100.00 ر.س</td>
+                                <td>1,052.50 ر.س</td>
+                                <td>631.50 ر.س</td>
+                                <td class="highlight">40,416.00 ر.س</td>
+                                <td>2024-12-08</td>
+                                <td><span class="payment-badge visa">فيزا</span></td>
+                                <td><span class="status-badge status-ST-06">ST-06</span></td>
+                                <td>
+                                    <button class="btn-sm btn-primary">عرض</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>مدرسة الفرسان الأهلية</td>
+                                <td>REF-I6E4G8H5</td>
+                                <td>67,500.00 ر.س</td>
+                                <td>1,687.50 ر.س</td>
+                                <td>1,012.50 ر.س</td>
+                                <td class="highlight">64,800.00 ر.س</td>
+                                <td>2024-12-07</td>
+                                <td><span class="payment-badge mada">مدى</span></td>
+                                <td><span class="status-badge status-ST-04">ST-04</span></td>
+                                <td>
+                                    <button class="btn-sm btn-primary">عرض</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>مدرسة الأفق العالمية</td>
+                                <td>REF-J7F5H9I6</td>
+                                <td>53,400.00 ر.س</td>
+                                <td>1,335.00 ر.س</td>
+                                <td>801.00 ر.س</td>
+                                <td class="highlight">51,264.00 ر.س</td>
+                                <td>2024-12-06</td>
+                                <td><span class="payment-badge visa">فيزا</span></td>
+                                <td><span class="status-badge status-ST-01">ST-01</span></td>
+                                <td>
+                                    <button class="btn-sm btn-primary">عرض</button>
+                                    <button class="btn-sm btn-success reviewer-only">مراجعة</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Notifications Page - Approver View -->
+            <div class="content-page" id="notifications-approver-content">
+                <header class="page-header">
+                    <h1>إشعارات المعتمد</h1>
+                    <div class="header-info">
+                        <span class="info-badge">5 معاملات تنتظر الاعتماد</span>
+                    </div>
+                </header>
+
+                <!-- Statistics -->
+                <div class="stats-grid">
                     <div class="stat-card stat-warning">
                         <div class="stat-icon">⏳</div>
                         <div class="stat-content">
-                            <div class="stat-label" data-ar="في انتظار الاعتماد" data-en="Pending Approval">في انتظار الاعتماد</div>
-                            <div class="stat-value" id="pendingCount">0</div>
+                            <div class="stat-label">في انتظار الاعتماد</div>
+                            <div class="stat-value">5</div>
                         </div>
                     </div>
                     <div class="stat-card stat-success">
                         <div class="stat-icon">✅</div>
                         <div class="stat-content">
-                            <div class="stat-label" data-ar="معتمد اليوم" data-en="Approved Today">معتمد اليوم</div>
-                            <div class="stat-value" id="approvedTodayCount">0</div>
+                            <div class="stat-label">معتمد اليوم</div>
+                            <div class="stat-value">8</div>
                         </div>
                     </div>
                     <div class="stat-card stat-danger">
                         <div class="stat-icon">❌</div>
                         <div class="stat-content">
-                            <div class="stat-label" data-ar="مرفوض اليوم" data-en="Rejected Today">مرفوض اليوم</div>
-                            <div class="stat-value" id="rejectedTodayCount">0</div>
+                            <div class="stat-label">مرفوض اليوم</div>
+                            <div class="stat-value">2</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Approver Notifications -->
-                <div id="approverNotifications" style="display: none;">
-                    <h2 data-ar="معاملات قيد المراجعة (ST-02)" data-en="Pending Transactions (ST-02)">معاملات قيد المراجعة (ST-02)</h2>
-                    <div id="pendingTransactionsList" class="notifications-grid"></div>
-                </div>
+                <h2 class="section-title">معاملات قيد المراجعة (ST-02)</h2>
 
-                <!-- Reviewer Notifications -->
-                <div id="reviewerNotifications" style="display: none;">
-                    <h2 data-ar="المعاملات المرفوضة" data-en="Rejected Transactions">المعاملات المرفوضة</h2>
-                    <div id="rejectedTransactionsList" class="notifications-grid"></div>
+                <!-- Notifications Grid -->
+                <div class="notifications-grid">
+                    <!-- Notification Card 1 -->
+                    <div class="notification-card new">
+                        <div class="notification-header">
+                            <span class="notification-status new">🔵 جديد</span>
+                            <span class="notification-date">2024-12-15</span>
+                        </div>
+                        <div class="notification-title">مدرسة المعرفة العالمية</div>
+                        <div class="notification-details">
+                            <div class="detail-row">
+                                <span class="detail-label">المبلغ الأصلي:</span>
+                                <span class="detail-value">62,500.00 ر.س</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">رسوم العقد:</span>
+                                <span class="detail-value">1,562.50 ر.س</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">رسوم البنك:</span>
+                                <span class="detail-value">937.50 ر.س</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">صافي المبلغ:</span>
+                                <span class="detail-value highlight">60,000.00 ر.س</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">طريقة الدفع:</span>
+                                <span class="payment-badge visa">فيزا</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">نوع العقد:</span>
+                                <span class="detail-value">عقد سنوي</span>
+                            </div>
+                        </div>
+                        <div class="notification-actions">
+                            <button class="btn btn-sm btn-success">✅ اعتماد</button>
+                            <button class="btn btn-sm btn-danger">❌ رفض</button>
+                            <button class="btn btn-sm btn-secondary">👁 تفاصيل</button>
+                        </div>
+                    </div>
 
-                    <h2 data-ar="المعاملات المعتمدة" data-en="Approved Transactions">المعاملات المعتمدة</h2>
-                    <div id="approvedTransactionsList" class="notifications-grid"></div>
+                    <!-- Notification Card 2 -->
+                    <div class="notification-card new">
+                        <div class="notification-header">
+                            <span class="notification-status new">🔵 جديد</span>
+                            <span class="notification-date">2024-12-14</span>
+                        </div>
+                        <div class="notification-title">مدرسة الأندلس العالمية</div>
+                        <div class="notification-details">
+                            <div class="detail-row">
+                                <span class="detail-label">المبلغ الأصلي:</span>
+                                <span class="detail-value">48,600.00 ر.س</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">رسوم العقد:</span>
+                                <span class="detail-value">1,215.00 ر.س</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">رسوم البنك:</span>
+                                <span class="detail-value">729.00 ر.س</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">صافي المبلغ:</span>
+                                <span class="detail-value highlight">46,656.00 ر.س</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">طريقة الدفع:</span>
+                                <span class="payment-badge mada">مدى</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">نوع العقد:</span>
+                                <span class="detail-value">عقد فصلي</span>
+                            </div>
+                        </div>
+                        <div class="notification-actions">
+                            <button class="btn btn-sm btn-success">✅ اعتماد</button>
+                            <button class="btn btn-sm btn-danger">❌ رفض</button>
+                            <button class="btn btn-sm btn-secondary">👁 تفاصيل</button>
+                        </div>
+                    </div>
+
+                    <!-- Notification Card 3 -->
+                    <div class="notification-card new">
+                        <div class="notification-header">
+                            <span class="notification-status new">🔵 جديد</span>
+                            <span class="notification-date">2024-12-13</span>
+                        </div>
+                        <div class="notification-title">مدرسة الحصان النموذجية</div>
+                        <div class="notification-details">
+                            <div class="detail-row">
+                                <span class="detail-label">المبلغ الأصلي:</span>
+                                <span class="detail-value">59,800.00 ر.س</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">رسوم العقد:</span>
+                                <span class="detail-value">1,495.00 ر.س</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">رسوم البنك:</span>
+                                <span class="detail-value">897.00 ر.س</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">صافي المبلغ:</span>
+                                <span class="detail-value highlight">57,408.00 ر.س</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">طريقة الدفع:</span>
+                                <span class="payment-badge mastercard">ماستركارد</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">نوع العقد:</span>
+                                <span class="detail-value">عقد سنوي</span>
+                            </div>
+                        </div>
+                        <div class="notification-actions">
+                            <button class="btn btn-sm btn-success">✅ اعتماد</button>
+                            <button class="btn btn-sm btn-danger">❌ رفض</button>
+                            <button class="btn btn-sm btn-secondary">👁 تفاصيل</button>
+                        </div>
+                    </div>
+
+                    <!-- Notification Card 4 -->
+                    <div class="notification-card">
+                        <div class="notification-header">
+                            <span class="notification-status">🔵 قيد المراجعة</span>
+                            <span class="notification-date">2024-12-12</span>
+                        </div>
+                        <div class="notification-title">مدرسة النخبة الأهلية</div>
+                        <div class="notification-details">
+                            <div class="detail-row">
+                                <span class="detail-label">المبلغ الأصلي:</span>
+                                <span class="detail-value">72,300.00 ر.س</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">صافي المبلغ:</span>
+                                <span class="detail-value highlight">69,408.00 ر.س</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">طريقة الدفع:</span>
+                                <span class="payment-badge visa">فيزا</span>
+                            </div>
+                        </div>
+                        <div class="notification-actions">
+                            <button class="btn btn-sm btn-success">✅ اعتماد</button>
+                            <button class="btn btn-sm btn-danger">❌ رفض</button>
+                            <button class="btn btn-sm btn-secondary">👁 تفاصيل</button>
+                        </div>
+                    </div>
+
+                    <!-- Notification Card 5 -->
+                    <div class="notification-card">
+                        <div class="notification-header">
+                            <span class="notification-status">🔵 قيد المراجعة</span>
+                            <span class="notification-date">2024-12-11</span>
+                        </div>
+                        <div class="notification-title">مدرسة المواهب الذهبية</div>
+                        <div class="notification-details">
+                            <div class="detail-row">
+                                <span class="detail-label">المبلغ الأصلي:</span>
+                                <span class="detail-value">51,200.00 ر.س</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">صافي المبلغ:</span>
+                                <span class="detail-value highlight">49,152.00 ر.س</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">طريقة الدفع:</span>
+                                <span class="payment-badge mada">مدى</span>
+                            </div>
+                        </div>
+                        <div class="notification-actions">
+                            <button class="btn btn-sm btn-success">✅ اعتماد</button>
+                            <button class="btn btn-sm btn-danger">❌ رفض</button>
+                            <button class="btn btn-sm btn-secondary">👁 تفاصيل</button>
+                        </div>
+                    </div>
                 </div>
             </div>
+
+            <!-- Notifications Page - Reviewer View -->
+            <div class="content-page" id="notifications-reviewer-content">
+                <header class="page-header">
+                    <h1>إشعارات المراجع</h1>
+                    <div class="header-info">
+                        <span class="info-badge danger">3 معاملات مرفوضة</span>
+                        <span class="info-badge success">7 معاملات معتمدة</span>
+                    </div>
+                </header>
+
+                <h2 class="section-title">المعاملات المرفوضة</h2>
+
+                <!-- Rejected Notifications -->
+                <div class="notifications-grid">
+                    <!-- Rejected Card 1 -->
+                    <div class="notification-card rejected">
+                        <div class="notification-header">
+                            <span class="notification-status rejected">🔴 مرفوض</span>
+                            <span class="notification-date">2024-12-14</span>
+                        </div>
+                        <div class="notification-title">مدرسة الشروق الأهلية</div>
+                        <div class="notification-details">
+                            <div class="detail-row">
+                                <span class="detail-label">المبلغ الأصلي:</span>
+                                <span class="detail-value">38,400.00 ر.س</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">رسوم العقد:</span>
+                                <span class="detail-value">960.00 ر.س</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">رسوم البنك:</span>
+                                <span class="detail-value">576.00 ر.س</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">صافي المبلغ:</span>
+                                <span class="detail-value highlight">36,864.00 ر.س</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">طريقة الدفع:</span>
+                                <span class="payment-badge mada">مدى</span>
+                            </div>
+                        </div>
+
+                        <div class="rejection-reason-box">
+                            <div class="reason-header">
+                                <span>📝</span>
+                                <span>سبب الرفض</span>
+                            </div>
+                            <div class="reason-text">
+                                رقم الآيبان غير مطابق لسجلات المدرسة. يرجى التحقق من البيانات البنكية وإعادة المراجعة.
+                            </div>
+                            <div class="reason-meta">
+                                رفض بواسطة: محمد العتيبي (معتمد) | 2024-12-14 10:45 ص
+                            </div>
+                        </div>
+
+                        <div class="notification-actions">
+                            <button class="btn btn-sm btn-warning">🔄 إعادة مراجعة</button>
+                            <button class="btn btn-sm btn-secondary">👁 تفاصيل</button>
+                        </div>
+                    </div>
+
+                    <!-- Rejected Card 2 -->
+                    <div class="notification-card rejected">
+                        <div class="notification-header">
+                            <span class="notification-status rejected">🔴 مرفوض</span>
+                            <span class="notification-date">2024-12-13</span>
+                        </div>
+                        <div class="notification-title">مدرسة القمة النموذجية</div>
+                        <div class="notification-details">
+                            <div class="detail-row">
+                                <span class="detail-label">المبلغ الأصلي:</span>
+                                <span class="detail-value">65,700.00 ر.س</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">رسوم العقد:</span>
+                                <span class="detail-value">1,642.50 ر.س</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">رسوم البنك:</span>
+                                <span class="detail-value">985.50 ر.س</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">صافي المبلغ:</span>
+                                <span class="detail-value highlight">63,072.00 ر.س</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">طريقة الدفع:</span>
+                                <span class="payment-badge visa">فيزا</span>
+                            </div>
+                        </div>
+
+                        <div class="rejection-reason-box">
+                            <div class="reason-header">
+                                <span>📝</span>
+                                <span>سبب الرفض</span>
+                            </div>
+                            <div class="reason-text">
+                                المبلغ المدخل لا يتطابق مع قيمة العقد المسجلة في النظام. الفارق: 500 ريال. يرجى المراجعة والتصحيح.
+                            </div>
+                            <div class="reason-meta">
+                                رفض بواسطة: محمد العتيبي (معتمد) | 2024-12-13 02:30 م
+                            </div>
+                        </div>
+
+                        <div class="notification-actions">
+                            <button class="btn btn-sm btn-warning">🔄 إعادة مراجعة</button>
+                            <button class="btn btn-sm btn-secondary">👁 تفاصيل</button>
+                        </div>
+                    </div>
+
+                    <!-- Rejected Card 3 -->
+                    <div class="notification-card rejected">
+                        <div class="notification-header">
+                            <span class="notification-status rejected">🔴 مرفوض</span>
+                            <span class="notification-date">2024-12-12</span>
+                        </div>
+                        <div class="notification-title">مدرسة التميز العالمية</div>
+                        <div class="notification-details">
+                            <div class="detail-row">
+                                <span class="detail-label">المبلغ الأصلي:</span>
+                                <span class="detail-value">42,900.00 ر.س</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">صافي المبلغ:</span>
+                                <span class="detail-value highlight">41,184.00 ر.س</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">طريقة الدفع:</span>
+                                <span class="payment-badge mastercard">ماستركارد</span>
+                            </div>
+                        </div>
+
+                        <div class="rejection-reason-box">
+                            <div class="reason-header">
+                                <span>📝</span>
+                                <span>سبب الرفض</span>
+                            </div>
+                            <div class="reason-text">
+                                المستندات المرفقة غير واضحة. يرجى إعادة رفع نسخة أوضح من العقد الموقع.
+                            </div>
+                            <div class="reason-meta">
+                                رفض بواسطة: محمد العتيبي (معتمد) | 2024-12-12 11:20 ص
+                            </div>
+                        </div>
+
+                        <div class="notification-actions">
+                            <button class="btn btn-sm btn-warning">🔄 إعادة مراجعة</button>
+                            <button class="btn btn-sm btn-secondary">👁 تفاصيل</button>
+                        </div>
+                    </div>
+                </div>
+
+                <h2 class="section-title">المعاملات المعتمدة</h2>
+
+                <!-- Approved Notifications -->
+                <div class="notifications-grid">
+                    <!-- Approved Card 1 -->
+                    <div class="notification-card approved">
+                        <div class="notification-header">
+                            <span class="notification-status approved">✅ معتمد</span>
+                            <span class="notification-date">2024-12-15</span>
+                        </div>
+                        <div class="notification-title">مدرسة الرياض النموذجية</div>
+                        <div class="notification-details">
+                            <div class="detail-row">
+                                <span class="detail-label">صافي المبلغ:</span>
+                                <span class="detail-value highlight">36,672.00 ر.س</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">التاريخ:</span>
+                                <span class="detail-value">2024-12-13</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">معتمد بواسطة:</span>
+                                <span class="detail-value">محمد العتيبي</span>
+                            </div>
+                        </div>
+                        <div class="notification-actions">
+                            <button class="btn btn-sm btn-secondary">👁 تفاصيل</button>
+                        </div>
+                    </div>
+
+                    <!-- Approved Card 2 -->
+                    <div class="notification-card approved">
+                        <div class="notification-header">
+                            <span class="notification-status approved">✅ معتمد</span>
+                            <span class="notification-date">2024-12-15</span>
+                        </div>
+                        <div class="notification-title">مدرسة الحصان النموذجية</div>
+                        <div class="notification-details">
+                            <div class="detail-row">
+                                <span class="detail-label">صافي المبلغ:</span>
+                                <span class="detail-value highlight">57,408.00 ر.س</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">التاريخ:</span>
+                                <span class="detail-value">2024-12-09</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">معتمد بواسطة:</span>
+                                <span class="detail-value">محمد العتيبي</span>
+                            </div>
+                        </div>
+                        <div class="notification-actions">
+                            <button class="btn btn-sm btn-secondary">👁 تفاصيل</button>
+                        </div>
+                    </div>
+
+                    <!-- Approved Card 3 -->
+                    <div class="notification-card approved">
+                        <div class="notification-header">
+                            <span class="notification-status approved">✅ معتمد</span>
+                            <span class="notification-date">2024-12-14</span>
+                        </div>
+                        <div class="notification-title">مدرسة الفيصلية الأهلية</div>
+                        <div class="notification-details">
+                            <div class="detail-row">
+                                <span class="detail-label">صافي المبلغ:</span>
+                                <span class="detail-value highlight">52,800.00 ر.س</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">التاريخ:</span>
+                                <span class="detail-value">2024-12-12</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">معتمد بواسطة:</span>
+                                <span class="detail-value">محمد العتيبي</span>
+                            </div>
+                        </div>
+                        <div class="notification-actions">
+                            <button class="btn btn-sm btn-secondary">👁 تفاصيل</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </main>
     </div>
-
-    <!-- Transaction Details Modal -->
-    <div id="detailsModal" class="modal">
-        <div class="modal-content modal-large">
-            <div class="modal-header">
-                <h2 data-ar="تفاصيل المعاملة" data-en="Transaction Details">تفاصيل المعاملة</h2>
-                <button class="modal-close" onclick="closeModal('detailsModal')">&times;</button>
-            </div>
-            <div class="modal-body" id="detailsModalBody">
-            </div>
-        </div>
-    </div>
-
-    <!-- Reject Modal -->
-    <div id="rejectModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 data-ar="رفض المعاملة" data-en="Reject Transaction">رفض المعاملة</h2>
-                <button class="modal-close" onclick="closeModal('rejectModal')">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label data-ar="سبب الرفض (مطلوب)" data-en="Rejection Reason (Required)">سبب الرفض (مطلوب)</label>
-                    <textarea id="rejectionReason" rows="4" class="form-control" required></textarea>
-                </div>
-                <div class="modal-actions">
-                    <button class="btn btn-danger" id="confirmReject" data-ar="تأكيد الرفض" data-en="Confirm Reject">تأكيد الرفض</button>
-                    <button class="btn btn-secondary" onclick="closeModal('rejectModal')" data-ar="إلغاء" data-en="Cancel">إلغاء</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Confirm Modal -->
-    <div id="confirmModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 data-ar="تأكيد العملية" data-en="Confirm Action">تأكيد العملية</h2>
-                <button class="modal-close" onclick="closeModal('confirmModal')">&times;</button>
-            </div>
-            <div class="modal-body">
-                <p id="confirmMessage"></p>
-                <div class="modal-actions">
-                    <button class="btn btn-primary" id="confirmAction" data-ar="تأكيد" data-en="Confirm">تأكيد</button>
-                    <button class="btn btn-secondary" onclick="closeModal('confirmModal')" data-ar="إلغاء" data-en="Cancel">إلغاء</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Toast Notification -->
-    <div id="toast" class="toast"></div>
-
-    <script src="app.js"></script>
 </body>
 </html>
