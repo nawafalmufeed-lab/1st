@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riyadh - The Neon Capital</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding: 30px;
+            border: 3px solid #ff00ff;
+            border-radius: 20px;
+            background: rgba(255, 0, 255, 0.05);
+            box-shadow: 0 0 30px rgba(255, 0, 255, 0.5),
+                        inset 0 0 30px rgba(255, 0, 255, 0.1);
+        }
+
+        h1.glow {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #00ffff;
+            text-shadow:
+                0 0 10px #00ffff,
+                0 0 20px #00ffff,
+                0 0 40px #00ffff,
+                0 0 80px #00ffff;
+            letter-spacing: 8px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                text-shadow:
+                    0 0 10px #00ffff,
+                    0 0 20px #00ffff,
+                    0 0 40px #00ffff,
+                    0 0 80px #00ffff;
+            }
+            50% {
+                text-shadow:
+                    0 0 20px #00ffff,
+                    0 0 40px #00ffff,
+                    0 0 60px #00ffff,
+                    0 0 100px #00ffff;
+            }
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            color: #ff00ff;
+            text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
+            margin-top: 10px;
+            letter-spacing: 3px;
+        }
+
+        main {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .content-box {
+            padding: 25px;
+            border: 2px solid #00ff00;
+            border-radius: 15px;
+            background: rgba(0, 255, 0, 0.03);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .content-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.6);
+            border-color: #00ffff;
+            background: rgba(0, 255, 255, 0.05);
+        }
+
+        .section-title {
+            color: #ffff00;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px #ffff00, 0 0 20px #ffff00;
+        }
+
+        p {
+            color: #e0e0e0;
+            font-size: 1rem;
+            text-align: justify;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            border-top: 2px solid #ff00ff;
+            margin-top: 20px;
+        }
+
+        .footer-text {
+            color: #ff00ff;
+            font-size: 1.2rem;
+            text-shadow: 0 0 10px #ff00ff;
+        }
+
+        @media (max-width: 768px) {
+            h1.glow {
+                font-size: 2.5rem;
+                letter-spacing: 4px;
+            }
+
+            .subtitle {
+                font-size: 1.2rem;
+            }
+
+            main {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 class="glow">RIYADH</h1>
+            <p class="subtitle">The Heart of Saudi Arabia</p>
+        </header>
+
+        <main>
+            <section class="content-box">
+                <h2 class="section-title">Welcome to Riyadh</h2>
+                <p>Riyadh, the vibrant capital of Saudi Arabia, is a stunning metropolis where ancient heritage meets futuristic innovation. Home to over 7 million people, this desert oasis has transformed into one of the Middle East's most dynamic cities.</p>
+            </section>
+
+            <section class="content-box">
+                <h2 class="section-title">Modern Marvel</h2>
+                <p>The city's skyline is dominated by iconic structures like the Kingdom Centre and Al Faisaliyah Tower. Riyadh showcases cutting-edge architecture, luxurious shopping districts, and world-class dining experiences that attract visitors globally.</p>
+            </section>
+
+            <section class="content-box">
+                <h2 class="section-title">Cultural Heritage</h2>
+                <p>Beyond its modern facade, Riyadh preserves rich Saudi traditions. The historic Diriyah district, Masmak Fortress, and bustling traditional souks offer glimpses into the kingdom's fascinating past and Bedouin culture.</p>
+            </section>
+
+            <section class="content-box">
+                <h2 class="section-title">Vision 2030</h2>
+                <p>As part of Saudi Arabia's Vision 2030, Riyadh is evolving into a global hub for business, tourism, and entertainment. Major projects like NEOM and the Riyadh Metro are reshaping the city's future, making it a beacon of progress in the Arabian Peninsula.</p>
+            </section>
+        </main>
+
+        <footer>
+            <p class="footer-text">Discover the Magic of Riyadh ✨</p>
+        </footer>
+    </div>
+</body>
+</html>
