@@ -1,0 +1,1432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduPay — School Payment Management System</title>
+  <style>
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy:   #0B1F4A;
+      --blue:   #1A56DB;
+      --sky:    #3B82F6;
+      --teal:   #0D9488;
+      --green:  #059669;
+      --amber:  #D97706;
+      --red:    #DC2626;
+      --slate:  #475569;
+      --light:  #F1F5F9;
+      --white:  #FFFFFF;
+      --border: #E2E8F0;
+      --gold:   #F59E0B;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: #0F172A;
+      color: var(--white);
+      line-height: 1.6;
+    }
+
+    /* ── Navigation ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(11,31,74,0.97);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 0.6rem 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-brand { font-size: 1.1rem; font-weight: 700; color: var(--gold); letter-spacing: 0.04em; }
+    .nav-links { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+    .nav-links a {
+      font-size: 0.72rem; color: rgba(255,255,255,0.65);
+      padding: 0.25rem 0.55rem; border-radius: 4px;
+      text-decoration: none; transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .nav-links a:hover { background: rgba(255,255,255,0.1); color: var(--white); }
+
+    /* ── Slide Container ── */
+    .slide-wrapper { padding-top: 60px; }
+    .slide {
+      min-height: 100vh;
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 4rem 6vw;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+
+    /* ── Slide Themes ── */
+    .slide-title-page   { background: linear-gradient(135deg, #0B1F4A 0%, #1A3A8F 60%, #0D9488 100%); }
+    .slide-problem      { background: linear-gradient(135deg, #1A0A0A 0%, #3B0A0A 100%); }
+    .slide-solution     { background: linear-gradient(135deg, #041F3A 0%, #0D3B6B 100%); }
+    .slide-roles        { background: linear-gradient(135deg, #071A28 0%, #0C3347 100%); }
+    .slide-flow         { background: linear-gradient(135deg, #020D1A 0%, #0B1F4A 100%); }
+    .slide-lifecycle    { background: linear-gradient(135deg, #04111A 0%, #083248 100%); }
+    .slide-arch         { background: linear-gradient(135deg, #030E1A 0%, #092A44 100%); }
+    .slide-financial    { background: linear-gradient(135deg, #001A0D 0%, #023B1A 100%); }
+    .slide-data         { background: linear-gradient(135deg, #090415 0%, #1A0A38 100%); }
+    .slide-screens      { background: linear-gradient(135deg, #030A1A 0%, #0B1F4A 100%); }
+    .slide-dashboard    { background: linear-gradient(135deg, #04101A 0%, #083248 100%); }
+    .slide-errors       { background: linear-gradient(135deg, #1A0800 0%, #3A1400 100%); }
+    .slide-recon        { background: linear-gradient(135deg, #001A14 0%, #023B28 100%); }
+    .slide-audit        { background: linear-gradient(135deg, #0A0614 0%, #1F0E38 100%); }
+    .slide-benefits     { background: linear-gradient(135deg, #041820 0%, #0B3040 100%); }
+
+    /* ── Decorative Circle ── */
+    .slide::before {
+      content: '';
+      position: absolute; right: -8vw; top: -8vh;
+      width: 40vw; height: 40vw; max-width: 520px; max-height: 520px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* ── Slide Number Badge ── */
+    .slide-num {
+      position: absolute; top: 1.5rem; right: 2rem;
+      font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.25); text-transform: uppercase;
+    }
+
+    /* ── Section Label ── */
+    .section-label {
+      display: inline-block; margin-bottom: 1.2rem;
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.15em;
+      text-transform: uppercase; padding: 0.3rem 0.8rem;
+      border-radius: 20px; border: 1px solid;
+    }
+    .label-red    { color: #FCA5A5; border-color: rgba(220,38,38,0.4); background: rgba(220,38,38,0.12); }
+    .label-blue   { color: #93C5FD; border-color: rgba(59,130,246,0.4); background: rgba(59,130,246,0.12); }
+    .label-teal   { color: #5EEAD4; border-color: rgba(13,148,136,0.4); background: rgba(13,148,136,0.12); }
+    .label-green  { color: #6EE7B7; border-color: rgba(5,150,105,0.4);  background: rgba(5,150,105,0.12); }
+    .label-purple { color: #C4B5FD; border-color: rgba(124,58,237,0.4); background: rgba(124,58,237,0.12); }
+    .label-amber  { color: #FCD34D; border-color: rgba(217,119,6,0.4);  background: rgba(217,119,6,0.12); }
+    .label-gold   { color: #FDE68A; border-color: rgba(245,158,11,0.4); background: rgba(245,158,11,0.12); }
+
+    /* ── Headings ── */
+    h1.hero { font-size: clamp(2.4rem, 5vw, 4rem); font-weight: 800; line-height: 1.15; margin-bottom: 1rem; }
+    h2.slide-heading {
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem); font-weight: 700;
+      margin-bottom: 1.8rem; line-height: 1.2;
+    }
+    .subtitle { font-size: 1.15rem; color: rgba(255,255,255,0.7); max-width: 680px; }
+    .tagline  { font-size: 0.85rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.5rem; }
+
+    /* ── Grid Layouts ── */
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+
+    /* ── Cards ── */
+    .card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px; padding: 1.4rem 1.6rem;
+      transition: transform 0.2s, background 0.2s;
+    }
+    .card:hover { background: rgba(255,255,255,0.08); transform: translateY(-2px); }
+    .card-icon { font-size: 2rem; margin-bottom: 0.7rem; }
+    .card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .card p, .card li { font-size: 0.88rem; color: rgba(255,255,255,0.75); }
+    .card ul { padding-left: 1.1rem; }
+    .card ul li { margin-bottom: 0.3rem; }
+
+    /* ── Pain Point Cards ── */
+    .pain-card {
+      background: rgba(220,38,38,0.08);
+      border: 1px solid rgba(220,38,38,0.25);
+      border-radius: 12px; padding: 1.2rem 1.4rem;
+    }
+    .pain-card h3 { color: #FCA5A5; font-size: 0.95rem; margin-bottom: 0.4rem; }
+    .pain-card p  { font-size: 0.85rem; color: rgba(255,255,255,0.65); }
+
+    /* ── Flow Steps ── */
+    .flow-steps { display: flex; gap: 0; align-items: stretch; flex-wrap: wrap; }
+    .flow-step {
+      flex: 1; min-width: 130px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px; padding: 1rem 0.9rem;
+      position: relative; text-align: center;
+      margin: 0 0.3rem 0.6rem;
+    }
+    .flow-step .step-num {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--blue); color: white;
+      font-size: 0.78rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 0.5rem;
+    }
+    .flow-step h4 { font-size: 0.82rem; font-weight: 700; margin-bottom: 0.3rem; }
+    .flow-step p  { font-size: 0.75rem; color: rgba(255,255,255,0.6); }
+    .flow-arrow { font-size: 1.4rem; color: rgba(255,255,255,0.25); align-self: center; margin: 0 -0.1rem; }
+
+    /* ── Status Badges ── */
+    .status-flow { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+    .status-badge {
+      padding: 0.35rem 0.9rem; border-radius: 20px;
+      font-size: 0.78rem; font-weight: 700; letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+    .status-arrow { color: rgba(255,255,255,0.3); font-size: 1.1rem; }
+    .s-await   { background: rgba(100,116,139,0.3); color: #CBD5E1; border: 1px solid rgba(100,116,139,0.5); }
+    .s-review  { background: rgba(59,130,246,0.25); color: #93C5FD; border: 1px solid rgba(59,130,246,0.5); }
+    .s-approved{ background: rgba(13,148,136,0.25); color: #5EEAD4; border: 1px solid rgba(13,148,136,0.5); }
+    .s-transfer{ background: rgba(124,58,237,0.25); color: #C4B5FD; border: 1px solid rgba(124,58,237,0.5); }
+    .s-complete{ background: rgba(5,150,105,0.25);  color: #6EE7B7; border: 1px solid rgba(5,150,105,0.5); }
+    .s-failed  { background: rgba(220,38,38,0.25);  color: #FCA5A5; border: 1px solid rgba(220,38,38,0.5); }
+    .s-partial { background: rgba(217,119,6,0.25);  color: #FCD34D; border: 1px solid rgba(217,119,6,0.5); }
+
+    /* ── Architecture Modules ── */
+    .arch-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+    .arch-module {
+      border-radius: 12px; padding: 1.1rem 1.3rem;
+      border-left: 4px solid;
+    }
+    .arch-module h3 { font-size: 0.88rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .arch-module p  { font-size: 0.78rem; color: rgba(255,255,255,0.65); }
+    .mod-blue   { background: rgba(26,86,219,0.15); border-color: var(--blue); }
+    .mod-teal   { background: rgba(13,148,136,0.15); border-color: var(--teal); }
+    .mod-green  { background: rgba(5,150,105,0.15);  border-color: var(--green); }
+    .mod-purple { background: rgba(124,58,237,0.15); border-color: #7C3AED; }
+    .mod-amber  { background: rgba(217,119,6,0.15);  border-color: var(--amber); }
+    .mod-red    { background: rgba(220,38,38,0.15);  border-color: var(--red); }
+
+    /* ── Money Flow ── */
+    .money-flow {
+      display: flex; align-items: center; gap: 0.8rem;
+      background: rgba(5,150,105,0.08); border: 1px solid rgba(5,150,105,0.3);
+      border-radius: 12px; padding: 1rem 1.4rem; flex-wrap: wrap;
+    }
+    .money-box {
+      background: rgba(5,150,105,0.2); border: 1px solid rgba(5,150,105,0.4);
+      border-radius: 8px; padding: 0.6rem 1rem; text-align: center;
+    }
+    .money-box .label { font-size: 0.7rem; color: #6EE7B7; text-transform: uppercase; letter-spacing: 0.08em; }
+    .money-box .amount { font-size: 1.1rem; font-weight: 800; color: white; }
+    .money-minus { font-size: 1.4rem; color: #FCA5A5; font-weight: 700; }
+    .money-equals{ font-size: 1.4rem; color: #FCD34D; font-weight: 700; }
+
+    /* ── Data Model ── */
+    .entity-card {
+      background: rgba(124,58,237,0.1);
+      border: 1px solid rgba(124,58,237,0.3);
+      border-radius: 10px; padding: 1rem 1.2rem;
+    }
+    .entity-card h3 { color: #C4B5FD; font-size: 0.88rem; font-weight: 700; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
+    .entity-card ul { padding-left: 1rem; }
+    .entity-card li { font-size: 0.78rem; color: rgba(255,255,255,0.65); margin-bottom: 0.2rem; }
+
+    /* ── Screen Mockup ── */
+    .screen-mock {
+      background: rgba(15,23,42,0.8);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 12px; overflow: hidden;
+    }
+    .screen-bar {
+      background: rgba(255,255,255,0.05);
+      padding: 0.5rem 0.9rem; display: flex; align-items: center; gap: 0.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .dot { width: 9px; height: 9px; border-radius: 50%; }
+    .d-red { background: #EF4444; } .d-yellow { background: #F59E0B; } .d-green { background: #22C55E; }
+    .screen-bar span { font-size: 0.7rem; color: rgba(255,255,255,0.3); margin-left: 0.5rem; }
+    .screen-body { padding: 1rem 1.2rem; font-size: 0.8rem; }
+
+    /* ── Metric Cards ── */
+    .metric-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px; padding: 1.2rem;
+      text-align: center;
+    }
+    .metric-val { font-size: 1.8rem; font-weight: 800; }
+    .metric-lbl { font-size: 0.75rem; color: rgba(255,255,255,0.55); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 0.3rem; }
+    .metric-delta { font-size: 0.72rem; margin-top: 0.4rem; }
+    .delta-up   { color: #6EE7B7; } .delta-down { color: #FCA5A5; }
+
+    /* ── Error Table ── */
+    .err-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+    .err-table th { text-align: left; padding: 0.6rem 0.8rem; color: rgba(255,255,255,0.5); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .err-table td { padding: 0.65rem 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; }
+    .err-table tr:last-child td { border-bottom: none; }
+    .err-type { color: #FCA5A5; font-weight: 600; }
+    .err-action { color: #FCD34D; }
+
+    /* ── Timeline ── */
+    .timeline { position: relative; padding-left: 1.8rem; }
+    .timeline::before { content: ''; position: absolute; left: 0.5rem; top: 0; bottom: 0; width: 2px; background: rgba(255,255,255,0.1); }
+    .tl-item { position: relative; margin-bottom: 1.1rem; }
+    .tl-dot {
+      position: absolute; left: -1.55rem; top: 0.25rem;
+      width: 12px; height: 12px; border-radius: 50%;
+      background: var(--blue); border: 2px solid rgba(255,255,255,0.2);
+    }
+    .tl-item h4 { font-size: 0.88rem; font-weight: 700; margin-bottom: 0.2rem; }
+    .tl-item p  { font-size: 0.8rem; color: rgba(255,255,255,0.6); }
+
+    /* ── Benefit Pillars ── */
+    .benefit-card {
+      border-radius: 14px; padding: 1.5rem 1.4rem;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+      text-align: center;
+    }
+    .benefit-icon { font-size: 2.4rem; margin-bottom: 0.7rem; }
+    .benefit-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .benefit-card p  { font-size: 0.82rem; color: rgba(255,255,255,0.65); }
+    .benefit-stat { font-size: 1.4rem; font-weight: 800; color: var(--gold); margin: 0.5rem 0 0.2rem; }
+
+    /* ── Divider ── */
+    .divider { height: 1px; background: rgba(255,255,255,0.07); margin: 1.5rem 0; }
+
+    /* ── Quote / Callout ── */
+    .callout {
+      border-left: 4px solid var(--gold);
+      background: rgba(245,158,11,0.08);
+      border-radius: 0 10px 10px 0;
+      padding: 0.9rem 1.3rem;
+      margin: 1.2rem 0;
+    }
+    .callout p { font-size: 0.88rem; color: rgba(255,255,255,0.8); font-style: italic; }
+
+    /* ── Footer ── */
+    .slide-footer {
+      position: absolute; bottom: 1.2rem; left: 6vw; right: 6vw;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 0.68rem; color: rgba(255,255,255,0.2);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .grid-2, .grid-3, .grid-4, .arch-grid { grid-template-columns: 1fr; }
+      .flow-steps { flex-direction: column; }
+      .flow-arrow { transform: rotate(90deg); }
+      .money-flow { flex-direction: column; align-items: flex-start; }
+      nav { padding: 0.5rem 1rem; }
+      .nav-links { display: none; }
+      .slide { padding: 3rem 5vw; }
+    }
+    @media print {
+      nav { display: none; }
+      .slide { page-break-after: always; min-height: unset; padding: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════ NAVIGATION ══════════════════════════════════════════ -->
+<nav>
+  <div class="nav-brand">EduPay</div>
+  <div class="nav-links">
+    <a href="#s1">Title</a>
+    <a href="#s2">Problem</a>
+    <a href="#s3">Solution</a>
+    <a href="#s4">Roles</a>
+    <a href="#s5">Flow</a>
+    <a href="#s6">Lifecycle</a>
+    <a href="#s7">Architecture</a>
+    <a href="#s8">Finance</a>
+    <a href="#s9">Data Model</a>
+    <a href="#s10">Screens</a>
+    <a href="#s11">Dashboard</a>
+    <a href="#s12">Errors</a>
+    <a href="#s13">Reconciliation</a>
+    <a href="#s14">Audit</a>
+    <a href="#s15">Benefits</a>
+  </div>
+</nav>
+
+<div class="slide-wrapper">
+
+<!-- ══════════════════════════════════════════ SLIDE 1: TITLE ══════════════════════════════════════════ -->
+<section class="slide slide-title-page" id="s1">
+  <div class="slide-num">Slide 01 / 15</div>
+
+  <div style="max-width:800px;">
+    <p class="tagline">Confidential · Product Prototype · 2026</p>
+    <h1 class="hero">EduPay<br><span style="color:var(--gold);">School Payment</span><br>Management Platform</h1>
+    <p class="subtitle" style="margin-bottom:2rem;">
+      A unified financial operations platform that automates the end-to-end journey of school payments —
+      from intake and multi-level approval to real-time bank settlement and full audit traceability.
+    </p>
+
+    <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:2.5rem;">
+      <div class="card" style="flex:1; min-width:160px;">
+        <div class="card-icon">🏫</div>
+        <h3>Sector</h3>
+        <p>Education FinTech · K-12 & Higher Ed</p>
+      </div>
+      <div class="card" style="flex:1; min-width:160px;">
+        <div class="card-icon">🏦</div>
+        <h3>Integration</h3>
+        <p>Direct bank API connectivity</p>
+      </div>
+      <div class="card" style="flex:1; min-width:160px;">
+        <div class="card-icon">🔒</div>
+        <h3>Compliance</h3>
+        <p>Full audit trail · Role-based access</p>
+      </div>
+      <div class="card" style="flex:1; min-width:160px;">
+        <div class="card-icon">⚡</div>
+        <h3>Automation</h3>
+        <p>Scheduled settlements & retry engine</p>
+      </div>
+    </div>
+
+    <div class="callout">
+      <p>"Turning manual, error-prone school payment processes into a governed, automated, and fully traceable financial workflow."</p>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>EduPay Platform · Product Prototype v1.0</span>
+    <span>CONFIDENTIAL — For Internal Review Only</span>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════ SLIDE 2: PROBLEM ══════════════════════════════════════════ -->
+<section class="slide slide-problem" id="s2">
+  <div class="slide-num">Slide 02 / 15</div>
+  <div class="section-label label-red">Problem Statement</div>
+  <h2 class="slide-heading">The Pain Behind <span style="color:#FCA5A5;">School Payments Today</span></h2>
+
+  <div class="grid-2" style="margin-bottom:1.8rem;">
+    <div class="pain-card">
+      <h3>📋 Manual Processing Everywhere</h3>
+      <p>Finance teams rely on spreadsheets, email threads, and manual data entry to track thousands of parent payments. Every handoff introduces delay and human error.</p>
+    </div>
+    <div class="pain-card">
+      <h3>🔀 No Single Source of Truth</h3>
+      <p>Payment data lives in disconnected systems — POS terminals, bank statements, accounting software — making reconciliation a multi-day ordeal every month.</p>
+    </div>
+    <div class="pain-card">
+      <h3>⏳ Approval Bottlenecks</h3>
+      <p>Transfers awaiting sign-off sit in inboxes without visibility. Reviewers don't know what's pending; approvers have no audit trail of who reviewed what.</p>
+    </div>
+    <div class="pain-card">
+      <h3>🏦 Bank Integration Gaps</h3>
+      <p>Bank transfers are initiated manually and outcomes tracked via phone calls or periodic log-ins. Failed transfers are discovered days late, causing cash-flow issues.</p>
+    </div>
+    <div class="pain-card">
+      <h3>💸 Fee Calculation Errors</h3>
+      <p>Platform fees, processing charges, and net school amounts are calculated in ad-hoc spreadsheets. Disputes arise monthly over who owes what to whom.</p>
+    </div>
+    <div class="pain-card">
+      <h3>🚫 Zero Accountability Trail</h3>
+      <p>When errors occur, there is no log of who changed what and when. Audit season becomes a forensics exercise rather than a straightforward report pull.</p>
+    </div>
+  </div>
+
+  <div class="callout">
+    <p>Assumed context: this system targets a payment aggregator or ministry of education that collects parent fees and distributes net amounts to individual schools after deducting platform fees.</p>
+  </div>
+
+  <div class="slide-footer">
+    <span>EduPay Platform · Slide 02</span>
+    <span>Problem Statement</span>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════ SLIDE 3: SOLUTION ══════════════════════════════════════════ -->
+<section class="slide slide-solution" id="s3">
+  <div class="slide-num">Slide 03 / 15</div>
+  <div class="section-label label-blue">Solution Overview</div>
+  <h2 class="slide-heading">EduPay — <span style="color:#93C5FD;">One Platform, Full Control</span></h2>
+
+  <p class="subtitle" style="margin-bottom:1.8rem;">
+    EduPay replaces fragmented manual workflows with a governed, automated platform that handles every step from payment collection to school settlement.
+  </p>
+
+  <div class="grid-3" style="margin-bottom:1.6rem;">
+    <div class="card">
+      <div class="card-icon">🎯</div>
+      <h3>Centralized Transaction Hub</h3>
+      <p>All incoming payments are captured in a single system with standardized statuses, eliminating data silos across channels.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">✅</div>
+      <h3>Structured Approval Workflow</h3>
+      <p>Every transaction goes through a defined Review → Approve chain before any money moves, with full ownership at each step.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🏦</div>
+      <h3>Direct Bank Integration</h3>
+      <p>API-driven bank transfers replace manual initiation. Transfer status is tracked in real time with automatic failure handling.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">📊</div>
+      <h3>Automated Fee & Ledger Engine</h3>
+      <p>Platform fees are computed automatically. A double-entry ledger ensures gross, fee, and net amounts always balance.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔁</div>
+      <h3>Smart Retry & Settlement</h3>
+      <p>Failed transfers are automatically retried with configurable back-off rules. Daily settlement jobs aggregate and reconcile.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔍</div>
+      <h3>Complete Audit Trail</h3>
+      <p>Every action — create, review, approve, transfer — is logged with user, timestamp, and reason, ready for instant reporting.</p>
+    </div>
+  </div>
+
+  <div style="display:flex; gap:1.5rem; flex-wrap:wrap;">
+    <div style="flex:1; min-width:200px; background:rgba(26,86,219,0.15); border:1px solid rgba(26,86,219,0.3); border-radius:10px; padding:1rem;">
+      <p style="font-size:0.8rem; color:#93C5FD; font-weight:700;">Primary Users</p>
+      <p style="font-size:0.82rem; color:rgba(255,255,255,0.7);">Finance reviewers, senior approvers, operations managers, and school administrators</p>
+    </div>
+    <div style="flex:1; min-width:200px; background:rgba(13,148,136,0.15); border:1px solid rgba(13,148,136,0.3); border-radius:10px; padding:1rem;">
+      <p style="font-size:0.8rem; color:#5EEAD4; font-weight:700;">Deployment Model</p>
+      <p style="font-size:0.82rem; color:rgba(255,255,255,0.7);">Cloud-hosted SaaS with role-based multi-tenant support per organization</p>
+    </div>
+    <div style="flex:1; min-width:200px; background:rgba(124,58,237,0.15); border:1px solid rgba(124,58,237,0.3); border-radius:10px; padding:1rem;">
+      <p style="font-size:0.8rem; color:#C4B5FD; font-weight:700;">Key Integrations</p>
+      <p style="font-size:0.82rem; color:rgba(255,255,255,0.7);">Bank APIs (SWIFT/IBAN), SMS/email notifications, ERP export, regulatory reporting</p>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>EduPay Platform · Slide 03</span>
+    <span>Solution Overview</span>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════ SLIDE 4: ROLES ══════════════════════════════════════════ -->
+<section class="slide slide-roles" id="s4">
+  <div class="slide-num">Slide 04 / 15</div>
+  <div class="section-label label-teal">User Roles & Responsibilities</div>
+  <h2 class="slide-heading">Who Does <span style="color:#5EEAD4;">What</span></h2>
+
+  <div class="grid-3" style="margin-bottom:1.8rem;">
+
+    <!-- Reviewer -->
+    <div class="card" style="border-top:3px solid var(--blue);">
+      <div class="card-icon">🔎</div>
+      <h3 style="color:#93C5FD;">Reviewer</h3>
+      <p style="margin-bottom:0.8rem; font-size:0.8rem; color:rgba(255,255,255,0.55);">First line of financial control</p>
+      <ul>
+        <li>Picks up new transactions from the queue</li>
+        <li>Verifies payment details and amounts</li>
+        <li>Validates school IBAN and beneficiary data</li>
+        <li>Checks for duplicates or anomalies</li>
+        <li>Adds notes and escalates or recommends approval</li>
+        <li>Cannot approve — only surfaces findings</li>
+      </ul>
+      <div style="margin-top:1rem; padding:0.6rem; background:rgba(26,86,219,0.15); border-radius:8px;">
+        <p style="font-size:0.75rem; color:#93C5FD;">⚠️ Reviewer sees: transaction data, ledger preview, prior audit notes</p>
+      </div>
+    </div>
+
+    <!-- Approver -->
+    <div class="card" style="border-top:3px solid var(--teal);">
+      <div class="card-icon">✅</div>
+      <h3 style="color:#5EEAD4;">Approver</h3>
+      <p style="margin-bottom:0.8rem; font-size:0.8rem; color:rgba(255,255,255,0.55);">Senior authority — final financial sign-off</p>
+      <ul>
+        <li>Reviews completed review summary</li>
+        <li>Approves or rejects with mandatory reason</li>
+        <li>Can approve single or batch transactions</li>
+        <li>Triggers bank transfer initiation on approval</li>
+        <li>Receives alerts for high-value or flagged items</li>
+        <li>Cannot self-approve transactions they reviewed</li>
+      </ul>
+      <div style="margin-top:1rem; padding:0.6rem; background:rgba(13,148,136,0.15); border-radius:8px;">
+        <p style="font-size:0.75rem; color:#5EEAD4;">✅ Approver sees: review notes, fee breakdown, risk flags, school profile</p>
+      </div>
+    </div>
+
+    <!-- System -->
+    <div class="card" style="border-top:3px solid var(--amber);">
+      <div class="card-icon">⚙️</div>
+      <h3 style="color:#FCD34D;">System (Automations)</h3>
+      <p style="margin-bottom:0.8rem; font-size:0.8rem; color:rgba(255,255,255,0.55);">Always-on background engine</p>
+      <ul>
+        <li>Receives and ingests incoming payments</li>
+        <li>Calculates fees and updates ledger entries</li>
+        <li>Initiates bank transfer API calls</li>
+        <li>Polls bank for transfer status updates</li>
+        <li>Executes retry logic on failures</li>
+        <li>Runs daily reconciliation and settlement jobs</li>
+        <li>Triggers notifications at each status change</li>
+      </ul>
+      <div style="margin-top:1rem; padding:0.6rem; background:rgba(217,119,6,0.15); border-radius:8px;">
+        <p style="font-size:0.75rem; color:#FCD34D;">🤖 System acts on: schedule triggers, approval events, bank callbacks</p>
+      </div>
+    </div>
+  </div>
+
+  <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:1rem 1.4rem;">
+    <p style="font-size:0.82rem; color:rgba(255,255,255,0.7);">
+      <strong style="color:white;">Segregation of Duties:</strong> No single user can both review and approve the same transaction.
+      The system enforces this at the workflow layer, creating a four-eyes principle for all financial movements.
+    </p>
+  </div>
+
+  <div class="slide-footer">
+    <span>EduPay Platform · Slide 04</span>
+    <span>User Roles</span>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════ SLIDE 5: PAYMENT FLOW ══════════════════════════════════════════ -->
+<section class="slide slide-flow" id="s5">
+  <div class="slide-num">Slide 05 / 15</div>
+  <div class="section-label label-blue">End-to-End Payment Flow</div>
+  <h2 class="slide-heading">From <span style="color:#93C5FD;">Parent Payment</span> to <span style="color:#6EE7B7;">School Settlement</span></h2>
+
+  <!-- Happy Path -->
+  <p style="font-size:0.8rem; color:rgba(255,255,255,0.5); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.8rem;">Happy Path</p>
+  <div class="flow-steps" style="margin-bottom:1.8rem;">
+    <div class="flow-step">
+      <div class="step-num">1</div>
+      <h4>Payment Received</h4>
+      <p>Parent pays via portal / POS. System creates transaction record. Status: <em>Awaiting Review</em></p>
+    </div>
+    <div class="flow-arrow">›</div>
+    <div class="flow-step">
+      <div class="step-num">2</div>
+      <h4>Assigned to Reviewer</h4>
+      <p>Reviewer claims transaction. System locks it. Status: <em>Under Review</em></p>
+    </div>
+    <div class="flow-arrow">›</div>
+    <div class="flow-step">
+      <div class="step-num">3</div>
+      <h4>Review Complete</h4>
+      <p>Reviewer verifies details, adds notes, marks ready for approval</p>
+    </div>
+    <div class="flow-arrow">›</div>
+    <div class="flow-step">
+      <div class="step-num">4</div>
+      <h4>Approver Action</h4>
+      <p>Approver reviews summary and approves. Status: <em>Approved</em></p>
+    </div>
+    <div class="flow-arrow">›</div>
+    <div class="flow-step">
+      <div class="step-num">5</div>
+      <h4>Bank Transfer</h4>
+      <p>System calls bank API with net amount to school IBAN. Status: <em>Transferred</em></p>
+    </div>
+    <div class="flow-arrow">›</div>
+    <div class="flow-step">
+      <div class="step-num">6</div>
+      <h4>Confirmation</h4>
+      <p>Bank confirms success. Ledger updated. Status: <em>Completed</em></p>
+    </div>
+  </div>
+
+  <!-- Edge Cases -->
+  <p style="font-size:0.8rem; color:rgba(255,255,255,0.5); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.8rem;">Edge Cases & Alternative Paths</p>
+  <div class="grid-3">
+    <div style="background:rgba(220,38,38,0.08); border:1px solid rgba(220,38,38,0.25); border-radius:10px; padding:1rem;">
+      <p style="color:#FCA5A5; font-weight:700; font-size:0.85rem; margin-bottom:0.5rem;">❌ Approver Rejects</p>
+      <p style="font-size:0.78rem; color:rgba(255,255,255,0.6);">Transaction returned to Reviewer with rejection reason. Reviewer corrects data or escalates. Full reason logged in audit trail.</p>
+    </div>
+    <div style="background:rgba(220,38,38,0.08); border:1px solid rgba(220,38,38,0.25); border-radius:10px; padding:1rem;">
+      <p style="color:#FCA5A5; font-weight:700; font-size:0.85rem; margin-bottom:0.5rem;">🏦 Bank Transfer Fails</p>
+      <p style="font-size:0.78rem; color:rgba(255,255,255,0.6);">System marks transfer as Failed. Retry engine schedules automatic re-attempt (up to 3×). After max retries, escalation alert sent to Approver.</p>
+    </div>
+    <div style="background:rgba(217,119,6,0.08); border:1px solid rgba(217,119,6,0.25); border-radius:10px; padding:1rem;">
+      <p style="color:#FCD34D; font-weight:700; font-size:0.85rem; margin-bottom:0.5rem;">⏱ Timeout / Pending</p>
+      <p style="font-size:0.78rem; color:rgba(255,255,255,0.6);">If bank does not confirm within SLA window, system polls again. After 24h, status moves to Pending Investigation and Finance team is alerted.</p>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>EduPay Platform · Slide 05</span>
+    <span>End-to-End Flow</span>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════ SLIDE 6: LIFECYCLE ══════════════════════════════════════════ -->
+<section class="slide slide-lifecycle" id="s6">
+  <div class="slide-num">Slide 06 / 15</div>
+  <div class="section-label label-teal">Transaction Lifecycle</div>
+  <h2 class="slide-heading">Status Flow — <span style="color:#5EEAD4;">Every State Explained</span></h2>
+
+  <div class="status-flow" style="margin-bottom:2rem;">
+    <span class="status-badge s-await">Awaiting Review</span>
+    <span class="status-arrow">→</span>
+    <span class="status-badge s-review">Under Review</span>
+    <span class="status-arrow">→</span>
+    <span class="status-badge s-approved">Approved</span>
+    <span class="status-arrow">→</span>
+    <span class="status-badge s-transfer">Transferred</span>
+    <span class="status-arrow">→</span>
+    <span class="status-badge s-complete">Completed</span>
+  </div>
+
+  <div class="grid-2" style="margin-bottom:1.5rem;">
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-dot" style="background:#94A3B8;"></div>
+        <h4>Awaiting Review</h4>
+        <p>Payment captured. No human action taken yet. Sits in the review queue. Timer starts (SLA clock).</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot" style="background:var(--sky);"></div>
+        <h4>Under Review</h4>
+        <p>A reviewer has claimed and is actively examining the transaction. Locked to prevent duplicate processing.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot" style="background:var(--teal);"></div>
+        <h4>Approved</h4>
+        <p>Senior approver has signed off. System queues bank transfer. Fee calculation is finalized and locked.</p>
+      </div>
+    </div>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-dot" style="background:#7C3AED;"></div>
+        <h4>Transferred</h4>
+        <p>Bank API call has been successfully sent. Awaiting bank-side confirmation. Net amount is in-flight.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot" style="background:var(--green);"></div>
+        <h4>Completed ✓</h4>
+        <p>Bank confirmed successful credit to school IBAN. Ledger marked final. Settlement record created.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot" style="background:var(--red);"></div>
+        <h4>Failed ✗</h4>
+        <p>Bank returned error or retries exhausted. Amount NOT debited. Transaction flagged for manual resolution.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Extra statuses -->
+  <div style="display:flex; gap:0.8rem; flex-wrap:wrap;">
+    <span class="status-badge s-failed">Failed</span>
+    <span class="status-badge s-partial">Partial Settlement</span>
+    <span style="font-size:0.8rem; color:rgba(255,255,255,0.5); align-self:center;">— also valid terminal/intermediate states</span>
+  </div>
+  <div class="divider"></div>
+  <div class="callout">
+    <p>State transitions are enforced by the system — no user can manually jump a transaction to Completed. Every transition generates an immutable audit log entry.</p>
+  </div>
+
+  <div class="slide-footer">
+    <span>EduPay Platform · Slide 06</span>
+    <span>Transaction Lifecycle</span>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════ SLIDE 7: ARCHITECTURE ══════════════════════════════════════════ -->
+<section class="slide slide-arch" id="s7">
+  <div class="slide-num">Slide 07 / 15</div>
+  <div class="section-label label-blue">System Architecture</div>
+  <h2 class="slide-heading">Platform Modules — <span style="color:#93C5FD;">Conceptual View</span></h2>
+
+  <div class="arch-grid" style="margin-bottom:1.5rem;">
+    <div class="arch-module mod-blue">
+      <h3>🧾 Transactions Module</h3>
+      <p>The core intake layer. Captures all incoming payments, assigns unique IDs, enforces the status machine, and drives the approval workflow. The source of truth for what money came in.</p>
+    </div>
+    <div class="arch-module mod-teal">
+      <h3>🏦 Bank Integration Layer</h3>
+      <p>Abstraction over bank APIs (SWIFT, local RTGS, IBAN-based transfers). Handles authentication, transfer initiation, status polling, and webhook callbacks. Isolates the rest of the system from bank-specific quirks.</p>
+    </div>
+    <div class="arch-module mod-green">
+      <h3>📒 Ledger (Accounting Engine)</h3>
+      <p>Maintains double-entry bookkeeping records for every financial event. Gross amount in, fee deducted, net out. Immutable ledger lines — nothing is ever deleted, only corrected by contra entries.</p>
+    </div>
+    <div class="arch-module mod-purple">
+      <h3>⚙️ Settlement Engine</h3>
+      <p>Runs daily (and on-demand) to aggregate approved transactions into settlement batches, compute net positions per school, and trigger bulk or individual bank transfers. Handles partial settlements.</p>
+    </div>
+    <div class="arch-module mod-amber">
+      <h3>🔔 Notifications Service</h3>
+      <p>Event-driven alerts via email, SMS, and in-app. Fires on every meaningful status change — approval needed, transfer completed, retry exhausted. Configurable per user role and urgency level.</p>
+    </div>
+    <div class="arch-module mod-red">
+      <h3>📊 Reporting & Analytics</h3>
+      <p>Pre-built dashboards for daily volumes, fee summaries, school-level net positions, SLA compliance, and failure rates. Export to CSV/Excel for finance teams. Supports custom date range filtering.</p>
+    </div>
+  </div>
+
+  <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:1rem 1.4rem;">
+    <p style="font-size:0.82rem; color:rgba(255,255,255,0.7);">
+      <strong style="color:white;">Design Principle:</strong> Each module is independently deployable and communicates via internal events.
+      This means the Bank Integration layer can be swapped for a different bank partner without touching the Transaction or Ledger modules.
+    </p>
+  </div>
+
+  <div class="slide-footer">
+    <span>EduPay Platform · Slide 07</span>
+    <span>System Architecture</span>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════ SLIDE 8: FINANCIAL LOGIC ══════════════════════════════════════════ -->
+<section class="slide slide-financial" id="s8">
+  <div class="slide-num">Slide 08 / 15</div>
+  <div class="section-label label-green">Financial Logic</div>
+  <h2 class="slide-heading">How <span style="color:#6EE7B7;">Money Moves</span> Through the System</h2>
+
+  <!-- Money Flow Equation -->
+  <div class="money-flow" style="margin-bottom:1.8rem;">
+    <div class="money-box">
+      <div class="label">Gross Amount</div>
+      <div class="amount">SAR 1,000.00</div>
+      <div style="font-size:0.7rem; color:#6EE7B7; margin-top:0.2rem;">Parent pays</div>
+    </div>
+    <div class="money-minus">−</div>
+    <div class="money-box" style="background:rgba(220,38,38,0.2); border-color:rgba(220,38,38,0.4);">
+      <div class="label" style="color:#FCA5A5;">Platform Fee</div>
+      <div class="amount" style="color:#FCA5A5;">SAR 25.00</div>
+      <div style="font-size:0.7rem; color:#FCA5A5; margin-top:0.2rem;">2.5% deducted</div>
+    </div>
+    <div class="money-minus">−</div>
+    <div class="money-box" style="background:rgba(220,38,38,0.1); border-color:rgba(220,38,38,0.3);">
+      <div class="label" style="color:#FCA5A5;">Bank Transfer Fee</div>
+      <div class="amount" style="color:#FCA5A5;">SAR 5.00</div>
+      <div style="font-size:0.7rem; color:#FCA5A5; margin-top:0.2rem;">Fixed per transfer</div>
+    </div>
+    <div class="money-equals">=</div>
+    <div class="money-box" style="border-color:rgba(5,150,105,0.6);">
+      <div class="label">Net to School</div>
+      <div class="amount" style="color:#6EE7B7;">SAR 970.00</div>
+      <div style="font-size:0.7rem; color:#6EE7B7; margin-top:0.2rem;">Transferred to IBAN</div>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-bottom:1.5rem;">
+    <div>
+      <h3 style="font-size:1rem; margin-bottom:1rem; color:#6EE7B7;">💰 Ledger Entry Breakdown</h3>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot" style="background:#6EE7B7;"></div>
+          <h4>DR: Receivables Account +1,000</h4>
+          <p>Money received from parent. System holds the gross amount.</p>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot" style="background:#FCA5A5;"></div>
+          <h4>CR: Platform Revenue +25</h4>
+          <p>Platform fee recognized as income at approval time.</p>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot" style="background:#FCA5A5;"></div>
+          <h4>CR: Bank Fees Payable +5</h4>
+          <p>Transfer cost accrued against the gross amount.</p>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot" style="background:#93C5FD;"></div>
+          <h4>CR: School Payable +970</h4>
+          <p>Net owed to school. Released to bank on transfer confirmation.</p>
+        </div>
+      </div>
+    </div>
+    <div>
+      <h3 style="font-size:1rem; margin-bottom:1rem; color:#6EE7B7;">🔑 Key Financial Rules</h3>
+      <div class="card">
+        <ul>
+          <li style="margin-bottom:0.6rem;"><strong>Separation of concerns:</strong> A transaction record (what happened) is distinct from a bank transfer record (how the net was sent). One transaction → one or more transfer attempts.</li>
+          <li style="margin-bottom:0.6rem;"><strong>Fee lock:</strong> Fees are calculated and locked at approval time, not at transfer time. Rate changes don't retroactively affect in-progress transactions.</li>
+          <li style="margin-bottom:0.6rem;"><strong>No money moves without approval:</strong> The bank transfer API call is gated — it cannot trigger unless transaction status = Approved.</li>
+          <li style="margin-bottom:0.6rem;"><strong>Failed transfers do not debit:</strong> If bank API returns failure, no ledger debit is posted. School Payable remains intact until retry succeeds.</li>
+          <li><strong>Settlement batching:</strong> Multiple small transactions to the same school in one day can be batched into a single bank transfer to reduce fees.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>EduPay Platform · Slide 08</span>
+    <span>Financial Logic</span>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════ SLIDE 9: DATA MODEL ══════════════════════════════════════════ -->
+<section class="slide slide-data" id="s9">
+  <div class="slide-num">Slide 09 / 15</div>
+  <div class="section-label label-purple">Data Model</div>
+  <h2 class="slide-heading">Core Entities — <span style="color:#C4B5FD;">Simplified View</span></h2>
+
+  <div class="grid-3" style="margin-bottom:1.5rem;">
+    <div class="entity-card">
+      <h3>🧾 Transactions</h3>
+      <ul>
+        <li>Transaction ID (unique)</li>
+        <li>Payer (parent) reference</li>
+        <li>School ID</li>
+        <li>Gross amount & currency</li>
+        <li>Current status</li>
+        <li>Reviewer ID / Approver ID</li>
+        <li>Created at / Updated at</li>
+      </ul>
+      <p style="font-size:0.72rem; color:#C4B5FD; margin-top:0.6rem;">Central entity — everything links here</p>
+    </div>
+    <div class="entity-card">
+      <h3>📒 Ledger Entries</h3>
+      <ul>
+        <li>Entry ID</li>
+        <li>Transaction ID (FK)</li>
+        <li>Entry type (DR/CR)</li>
+        <li>Account code</li>
+        <li>Amount</li>
+        <li>Created at</li>
+        <li>Immutable flag</li>
+      </ul>
+      <p style="font-size:0.72rem; color:#C4B5FD; margin-top:0.6rem;">Never deleted — only contra entries</p>
+    </div>
+    <div class="entity-card">
+      <h3>🏫 Accounts (Schools)</h3>
+      <ul>
+        <li>School ID</li>
+        <li>School name</li>
+        <li>IBAN (verified)</li>
+        <li>Bank name / branch</li>
+        <li>Fee tier / rate</li>
+        <li>Status (active/suspended)</li>
+        <li>Total settled to date</li>
+      </ul>
+      <p style="font-size:0.72rem; color:#C4B5FD; margin-top:0.6rem;">Drives fee calculation & transfer target</p>
+    </div>
+    <div class="entity-card">
+      <h3>🏦 Bank Transfers</h3>
+      <ul>
+        <li>Transfer ID</li>
+        <li>Transaction ID (FK)</li>
+        <li>Destination IBAN</li>
+        <li>Net amount sent</li>
+        <li>Bank reference number</li>
+        <li>Status (sent/confirmed/failed)</li>
+        <li>Attempt count / last retry</li>
+      </ul>
+      <p style="font-size:0.72rem; color:#C4B5FD; margin-top:0.6rem;">One per transfer attempt</p>
+    </div>
+    <div class="entity-card">
+      <h3>📦 Settlements</h3>
+      <ul>
+        <li>Settlement ID</li>
+        <li>Settlement date</li>
+        <li>School ID (FK)</li>
+        <li>Transaction IDs included</li>
+        <li>Total gross / fees / net</li>
+        <li>Bank transfer ID (FK)</li>
+        <li>Reconciliation status</li>
+      </ul>
+      <p style="font-size:0.72rem; color:#C4B5FD; margin-top:0.6rem;">Daily aggregate per school</p>
+    </div>
+    <div class="entity-card">
+      <h3>🗂 Audit Logs</h3>
+      <ul>
+        <li>Log ID</li>
+        <li>Entity type + ID</li>
+        <li>Action performed</li>
+        <li>Actor (user ID / system)</li>
+        <li>Before state / After state</li>
+        <li>IP address</li>
+        <li>Timestamp (UTC)</li>
+      </ul>
+      <p style="font-size:0.72rem; color:#C4B5FD; margin-top:0.6rem;">Append-only — no deletes ever</p>
+    </div>
+  </div>
+
+  <div class="callout">
+    <p>Relationship summary: One Transaction → many Ledger Entries + one (or more retry) Bank Transfers + one Settlement. One School → many Transactions + many Settlements. Every state change → one Audit Log entry.</p>
+  </div>
+
+  <div class="slide-footer">
+    <span>EduPay Platform · Slide 09</span>
+    <span>Data Model</span>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════ SLIDE 10: KEY SCREENS ══════════════════════════════════════════ -->
+<section class="slide slide-screens" id="s10">
+  <div class="slide-num">Slide 10 / 15</div>
+  <div class="section-label label-blue">Key Screens — Prototype UX</div>
+  <h2 class="slide-heading">What Users <span style="color:#93C5FD;">See & Do</span></h2>
+
+  <div class="grid-2" style="gap:1.2rem;">
+
+    <!-- Dashboard -->
+    <div class="screen-mock">
+      <div class="screen-bar">
+        <div class="dot d-red"></div><div class="dot d-yellow"></div><div class="dot d-green"></div>
+        <span>EduPay · Dashboard</span>
+      </div>
+      <div class="screen-body">
+        <p style="color:#93C5FD; font-weight:700; margin-bottom:0.5rem;">📊 Home Dashboard</p>
+        <p style="color:rgba(255,255,255,0.6); margin-bottom:0.5rem;">Finance Manager / Approver sees:</p>
+        <ul style="color:rgba(255,255,255,0.65); padding-left:1rem; font-size:0.78rem;">
+          <li>KPI tiles: Today's volume, pending approvals, failed transfers</li>
+          <li>Status breakdown chart (by count and SAR value)</li>
+          <li>Recent activity feed with timestamps</li>
+          <li>Quick-action buttons: Approve Batch, Export Report</li>
+          <li>SLA breach alerts highlighted in red</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Transactions List -->
+    <div class="screen-mock">
+      <div class="screen-bar">
+        <div class="dot d-red"></div><div class="dot d-yellow"></div><div class="dot d-green"></div>
+        <span>EduPay · Transactions</span>
+      </div>
+      <div class="screen-body">
+        <p style="color:#5EEAD4; font-weight:700; margin-bottom:0.5rem;">🧾 Transactions List</p>
+        <p style="color:rgba(255,255,255,0.6); margin-bottom:0.5rem;">Reviewer / Approver sees:</p>
+        <ul style="color:rgba(255,255,255,0.65); padding-left:1rem; font-size:0.78rem;">
+          <li>Filterable table: by status, school, date range, amount band</li>
+          <li>Columns: ID, School, Amount, Fee, Net, Status, Age, Reviewer</li>
+          <li>Color-coded status badges (green/amber/red)</li>
+          <li>One-click Claim for reviewers / Approve for approvers</li>
+          <li>Bulk select with batch approve action</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Transaction Details -->
+    <div class="screen-mock">
+      <div class="screen-bar">
+        <div class="dot d-red"></div><div class="dot d-yellow"></div><div class="dot d-green"></div>
+        <span>EduPay · Transaction Detail</span>
+      </div>
+      <div class="screen-body">
+        <p style="color:#FCD34D; font-weight:700; margin-bottom:0.5rem;">🔍 Transaction Detail</p>
+        <p style="color:rgba(255,255,255,0.6); margin-bottom:0.5rem;">Drill-down view shows:</p>
+        <ul style="color:rgba(255,255,255,0.65); padding-left:1rem; font-size:0.78rem;">
+          <li>Full payment metadata (payer, school, date, reference)</li>
+          <li>Fee calculation table: gross → fees → net</li>
+          <li>Ledger entry preview (DR/CR lines)</li>
+          <li>Bank transfer history (each attempt + status)</li>
+          <li>Reviewer notes input + audit timeline sidebar</li>
+          <li>Approve / Reject buttons with mandatory reason modal</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Settlements -->
+    <div class="screen-mock">
+      <div class="screen-bar">
+        <div class="dot d-red"></div><div class="dot d-yellow"></div><div class="dot d-green"></div>
+        <span>EduPay · Settlements</span>
+      </div>
+      <div class="screen-body">
+        <p style="color:#6EE7B7; font-weight:700; margin-bottom:0.5rem;">📦 Settlements View</p>
+        <p style="color:rgba(255,255,255,0.6); margin-bottom:0.5rem;">Finance team sees:</p>
+        <ul style="color:rgba(255,255,255,0.65); padding-left:1rem; font-size:0.78rem;">
+          <li>Daily settlement batches grouped by school</li>
+          <li>Per-batch: transaction count, gross total, fee total, net sent</li>
+          <li>Bank transfer reference per batch</li>
+          <li>Reconciliation status: Matched / Unmatched / Pending</li>
+          <li>Download settlement statement (PDF/Excel)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>EduPay Platform · Slide 10</span>
+    <span>Key Screens</span>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════ SLIDE 11: DASHBOARD ══════════════════════════════════════════ -->
+<section class="slide slide-dashboard" id="s11">
+  <div class="slide-num">Slide 11 / 15</div>
+  <div class="section-label label-teal">Dashboard Deep-Dive</div>
+  <h2 class="slide-heading">The Finance Manager's <span style="color:#5EEAD4;">Command Center</span></h2>
+
+  <!-- KPI Row -->
+  <div class="grid-4" style="margin-bottom:1.8rem;">
+    <div class="metric-card">
+      <div class="metric-val" style="color:#93C5FD;">SAR 2.4M</div>
+      <div class="metric-lbl">Total Volume Today</div>
+      <div class="metric-delta delta-up">↑ 12% vs yesterday</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-val" style="color:#FCA5A5;">SAR 60K</div>
+      <div class="metric-lbl">Platform Fees Earned</div>
+      <div class="metric-delta delta-up">↑ 2.5% avg rate</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-val" style="color:#6EE7B7;">SAR 2.34M</div>
+      <div class="metric-lbl">Net to Schools</div>
+      <div class="metric-delta delta-up">↑ 97.5% pass-through</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-val" style="color:#FCD34D;">47</div>
+      <div class="metric-lbl">Pending Approval</div>
+      <div class="metric-delta delta-down">⚠ 8 breaching SLA</div>
+    </div>
+  </div>
+
+  <!-- Secondary Metrics -->
+  <div class="grid-3" style="margin-bottom:1.5rem;">
+    <div class="card">
+      <h3 style="color:#5EEAD4; margin-bottom:0.8rem;">📈 Status Breakdown</h3>
+      <div style="font-size:0.82rem;">
+        <div style="display:flex; justify-content:space-between; margin-bottom:0.4rem;"><span>Awaiting Review</span><span style="color:#CBD5E1; font-weight:700;">124</span></div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:0.4rem;"><span>Under Review</span><span style="color:#93C5FD; font-weight:700;">38</span></div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:0.4rem;"><span>Pending Approval</span><span style="color:#FCD34D; font-weight:700;">47</span></div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:0.4rem;"><span>Transferred (In-Flight)</span><span style="color:#C4B5FD; font-weight:700;">212</span></div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:0.4rem;"><span>Completed Today</span><span style="color:#6EE7B7; font-weight:700;">1,847</span></div>
+        <div style="display:flex; justify-content:space-between;"><span>Failed (Needs Action)</span><span style="color:#FCA5A5; font-weight:700;">11</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="color:#FCD34D; margin-bottom:0.8rem;">🏫 Top Schools Today</h3>
+      <div style="font-size:0.8rem;">
+        <div style="display:flex; justify-content:space-between; margin-bottom:0.4rem;"><span>Al-Nour International</span><span style="color:#6EE7B7;">SAR 340K</span></div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:0.4rem;"><span>Al-Fajr Academy</span><span style="color:#6EE7B7;">SAR 287K</span></div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:0.4rem;"><span>Horizon Schools</span><span style="color:#6EE7B7;">SAR 251K</span></div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:0.4rem;"><span>Knowledge Gate</span><span style="color:#6EE7B7;">SAR 198K</span></div>
+        <div style="display:flex; justify-content:space-between;"><span>Future Minds</span><span style="color:#6EE7B7;">SAR 176K</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="color:#FCA5A5; margin-bottom:0.8rem;">⚠ Alerts & Actions</h3>
+      <div style="font-size:0.8rem;">
+        <div style="padding:0.4rem; background:rgba(220,38,38,0.1); border-radius:6px; margin-bottom:0.4rem; color:#FCA5A5;">🔴 11 transfers failed — retry needed</div>
+        <div style="padding:0.4rem; background:rgba(217,119,6,0.1); border-radius:6px; margin-bottom:0.4rem; color:#FCD34D;">🟡 8 transactions near SLA breach</div>
+        <div style="padding:0.4rem; background:rgba(59,130,246,0.1); border-radius:6px; margin-bottom:0.4rem; color:#93C5FD;">🔵 Daily settlement job runs at 23:00</div>
+        <div style="padding:0.4rem; background:rgba(5,150,105,0.1); border-radius:6px; color:#6EE7B7;">✅ Reconciliation: 100% matched</div>
+      </div>
+    </div>
+  </div>
+
+  <p style="font-size:0.8rem; color:rgba(255,255,255,0.5);">Dashboard supports filters: Date Range · School · Status · Amount Band · Reviewer · Approver — with one-click CSV/Excel export of any view.</p>
+
+  <div class="slide-footer">
+    <span>EduPay Platform · Slide 11</span>
+    <span>Dashboard</span>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════ SLIDE 12: ERRORS ══════════════════════════════════════════ -->
+<section class="slide slide-errors" id="s12">
+  <div class="slide-num">Slide 12 / 15</div>
+  <div class="section-label label-red">Error Handling & Retry Logic</div>
+  <h2 class="slide-heading">When Things Go Wrong — <span style="color:#FCA5A5;">The Safety Net</span></h2>
+
+  <table class="err-table" style="margin-bottom:1.8rem;">
+    <thead>
+      <tr>
+        <th>Error Type</th>
+        <th>Root Cause</th>
+        <th>System Response</th>
+        <th>Retry Policy</th>
+        <th>Escalation</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="err-type">Bank API Timeout</td>
+        <td style="color:rgba(255,255,255,0.65);">Bank takes too long to respond</td>
+        <td class="err-action">Mark transfer as Pending · Do not debit ledger</td>
+        <td style="color:rgba(255,255,255,0.65);">3 retries: 5m → 15m → 60m</td>
+        <td style="color:#FCA5A5;">Alert Finance team after attempt 3</td>
+      </tr>
+      <tr>
+        <td class="err-type">Invalid IBAN</td>
+        <td style="color:rgba(255,255,255,0.65);">School IBAN failed bank validation</td>
+        <td class="err-action">Mark transfer Failed · Flag school account</td>
+        <td style="color:rgba(255,255,255,0.65);">No auto-retry — IBAN must be corrected</td>
+        <td style="color:#FCA5A5;">Alert school admin + approver immediately</td>
+      </tr>
+      <tr>
+        <td class="err-type">Insufficient Funds</td>
+        <td style="color:rgba(255,255,255,0.65);">Platform operating account low balance</td>
+        <td class="err-action">Queue transfer · Pause settlement batch</td>
+        <td style="color:rgba(255,255,255,0.65);">Retry after manual top-up confirmation</td>
+        <td style="color:#FCA5A5;">Immediate CFO-level alert</td>
+      </tr>
+      <tr>
+        <td class="err-type">Duplicate Transaction</td>
+        <td style="color:rgba(255,255,255,0.65);">Same payment received twice</td>
+        <td class="err-action">Block second entry · Flag for review</td>
+        <td style="color:rgba(255,255,255,0.65);">No transfer until manually resolved</td>
+        <td style="color:#FCA5A5;">Reviewer notified to confirm or reject duplicate</td>
+      </tr>
+      <tr>
+        <td class="err-type">Bank System Down</td>
+        <td style="color:rgba(255,255,255,0.65);">Bank maintenance / outage</td>
+        <td class="err-action">Queue all transfers · Halt new initiations</td>
+        <td style="color:rgba(255,255,255,0.65);">Auto-resume polling every 30 mins</td>
+        <td style="color:#FCA5A5;">Status banner shown in dashboard to all users</td>
+      </tr>
+      <tr>
+        <td class="err-type">Partial Settlement</td>
+        <td style="color:rgba(255,255,255,0.65);">Some items in batch fail, others succeed</td>
+        <td class="err-action">Split batch · Mark failed items separately</td>
+        <td style="color:rgba(255,255,255,0.65);">Individual retry for failed items only</td>
+        <td style="color:#FCA5A5;">Settlement report flags partial completion</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="grid-2">
+    <div style="background:rgba(220,38,38,0.08); border:1px solid rgba(220,38,38,0.2); border-radius:10px; padding:1rem;">
+      <h3 style="color:#FCA5A5; font-size:0.9rem; margin-bottom:0.5rem;">Retry Rules Summary</h3>
+      <ul style="font-size:0.8rem; color:rgba(255,255,255,0.7); padding-left:1rem;">
+        <li>Max automatic retries: <strong style="color:white;">3 attempts</strong></li>
+        <li>Backoff strategy: <strong style="color:white;">Exponential (5m · 15m · 60m)</strong></li>
+        <li>After 3 failures: <strong style="color:white;">Manual intervention required</strong></li>
+        <li>No retry for: <strong style="color:white;">Invalid IBAN, Rejected by Bank (final)</strong></li>
+        <li>All retry attempts logged in Audit Trail</li>
+      </ul>
+    </div>
+    <div style="background:rgba(217,119,6,0.08); border:1px solid rgba(217,119,6,0.2); border-radius:10px; padding:1rem;">
+      <h3 style="color:#FCD34D; font-size:0.9rem; margin-bottom:0.5rem;">Financial Safety Guarantees</h3>
+      <ul style="font-size:0.8rem; color:rgba(255,255,255,0.7); padding-left:1rem;">
+        <li>No ledger debit posted until bank confirms success</li>
+        <li>Idempotency keys prevent duplicate bank API calls</li>
+        <li>Every retry uses a new transfer record — no mutation</li>
+        <li>Failed transactions never auto-complete</li>
+        <li>All failures visible in real time on dashboard</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>EduPay Platform · Slide 12</span>
+    <span>Error Handling & Retry Logic</span>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════ SLIDE 13: RECONCILIATION ══════════════════════════════════════════ -->
+<section class="slide slide-recon" id="s13">
+  <div class="slide-num">Slide 13 / 15</div>
+  <div class="section-label label-green">Reconciliation & Accuracy</div>
+  <h2 class="slide-heading">How We Ensure <span style="color:#6EE7B7;">Every Riyal Balances</span></h2>
+
+  <div class="grid-2" style="margin-bottom:1.8rem;">
+    <div>
+      <h3 style="font-size:1rem; color:#6EE7B7; margin-bottom:1rem;">🔄 Daily Reconciliation Job</h3>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot" style="background:#6EE7B7;"></div>
+          <h4>23:00 — Settlement Cut-Off</h4>
+          <p>System stops accepting new transactions into today's batch. All approved transactions are locked for settlement.</p>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot" style="background:#5EEAD4;"></div>
+          <h4>23:05 — Aggregate Per School</h4>
+          <p>Settlement engine sums all approved, same-day transactions per school. Calculates total gross, fees, and net.</p>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot" style="background:#93C5FD;"></div>
+          <h4>23:10 — Initiate Batch Transfers</h4>
+          <p>Single bank transfer per school for the day's net amount. One bank call per school, reducing transfer costs.</p>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot" style="background:#C4B5FD;"></div>
+          <h4>Next Day 06:00 — Bank Response Check</h4>
+          <p>System polls bank for overnight transfer confirmations. Updates all transaction statuses to Completed or Failed.</p>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot" style="background:#FCD34D;"></div>
+          <h4>06:30 — Reconciliation Report</h4>
+          <p>System compares internal records against bank statement. Flags any discrepancies automatically for Finance review.</p>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <h3 style="font-size:1rem; color:#6EE7B7; margin-bottom:1rem;">✅ Accuracy Mechanisms</h3>
+      <div style="display:flex; flex-direction:column; gap:0.8rem;">
+        <div class="card">
+          <h3>Ledger Balancing Check</h3>
+          <p>After every batch, system verifies: Total DR = Total CR across all ledger entries. Any imbalance triggers immediate alert. No batch closes with an unbalanced ledger.</p>
+        </div>
+        <div class="card">
+          <h3>Bank Statement Matching</h3>
+          <p>Each confirmed bank transfer is matched to an internal transfer record via bank reference number. Unmatched items (in bank but not in system, or vice versa) are flagged as Exceptions.</p>
+        </div>
+        <div class="card">
+          <h3>Three-Way Reconciliation</h3>
+          <p>System checks: (1) Transaction record, (2) Ledger entry, (3) Bank transfer record all agree on amounts. If any two of three disagree, a discrepancy ticket is auto-raised.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <p>Assumption: Bank provides either a webhook callback on transfer completion or a pull-based statement file (MT940/CAMT.053) that the system imports and auto-matches daily.</p>
+  </div>
+
+  <div class="slide-footer">
+    <span>EduPay Platform · Slide 13</span>
+    <span>Reconciliation & Accuracy</span>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════ SLIDE 14: AUDIT ══════════════════════════════════════════ -->
+<section class="slide slide-audit" id="s14">
+  <div class="slide-num">Slide 14 / 15</div>
+  <div class="section-label label-purple">Audit & Control</div>
+  <h2 class="slide-heading">Full Traceability — <span style="color:#C4B5FD;">Who Did What, When, and Why</span></h2>
+
+  <div class="grid-2" style="margin-bottom:1.8rem;">
+    <div>
+      <h3 style="font-size:1rem; color:#C4B5FD; margin-bottom:1rem;">📋 What Gets Logged</h3>
+      <table style="width:100%; border-collapse:collapse; font-size:0.8rem;">
+        <thead>
+          <tr>
+            <th style="text-align:left; padding:0.5rem 0.6rem; color:rgba(255,255,255,0.4); font-size:0.72rem; text-transform:uppercase; border-bottom:1px solid rgba(255,255,255,0.08);">Event</th>
+            <th style="text-align:left; padding:0.5rem 0.6rem; color:rgba(255,255,255,0.4); font-size:0.72rem; text-transform:uppercase; border-bottom:1px solid rgba(255,255,255,0.08);">Actor</th>
+            <th style="text-align:left; padding:0.5rem 0.6rem; color:rgba(255,255,255,0.4); font-size:0.72rem; text-transform:uppercase; border-bottom:1px solid rgba(255,255,255,0.08);">Captured Data</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td style="padding:0.45rem 0.6rem; border-bottom:1px solid rgba(255,255,255,0.04); color:#C4B5FD;">Transaction Created</td><td style="padding:0.45rem 0.6rem; border-bottom:1px solid rgba(255,255,255,0.04);">System</td><td style="padding:0.45rem 0.6rem; border-bottom:1px solid rgba(255,255,255,0.04); color:rgba(255,255,255,0.6);">Amount, school, payer, channel</td></tr>
+          <tr><td style="padding:0.45rem 0.6rem; border-bottom:1px solid rgba(255,255,255,0.04); color:#C4B5FD;">Review Claimed</td><td style="padding:0.45rem 0.6rem; border-bottom:1px solid rgba(255,255,255,0.04);">Reviewer</td><td style="padding:0.45rem 0.6rem; border-bottom:1px solid rgba(255,255,255,0.04); color:rgba(255,255,255,0.6);">User ID, timestamp, IP address</td></tr>
+          <tr><td style="padding:0.45rem 0.6rem; border-bottom:1px solid rgba(255,255,255,0.04); color:#C4B5FD;">Review Completed</td><td style="padding:0.45rem 0.6rem; border-bottom:1px solid rgba(255,255,255,0.04);">Reviewer</td><td style="padding:0.45rem 0.6rem; border-bottom:1px solid rgba(255,255,255,0.04); color:rgba(255,255,255,0.6);">Notes added, checklist results, duration</td></tr>
+          <tr><td style="padding:0.45rem 0.6rem; border-bottom:1px solid rgba(255,255,255,0.04); color:#C4B5FD;">Approved / Rejected</td><td style="padding:0.45rem 0.6rem; border-bottom:1px solid rgba(255,255,255,0.04);">Approver</td><td style="padding:0.45rem 0.6rem; border-bottom:1px solid rgba(255,255,255,0.04); color:rgba(255,255,255,0.6);">Decision, mandatory reason text, user ID</td></tr>
+          <tr><td style="padding:0.45rem 0.6rem; border-bottom:1px solid rgba(255,255,255,0.04); color:#C4B5FD;">Transfer Initiated</td><td style="padding:0.45rem 0.6rem; border-bottom:1px solid rgba(255,255,255,0.04);">System</td><td style="padding:0.45rem 0.6rem; border-bottom:1px solid rgba(255,255,255,0.04); color:rgba(255,255,255,0.6);">Bank reference, IBAN used, net amount</td></tr>
+          <tr><td style="padding:0.45rem 0.6rem; border-bottom:1px solid rgba(255,255,255,0.04); color:#C4B5FD;">Transfer Confirmed/Failed</td><td style="padding:0.45rem 0.6rem; border-bottom:1px solid rgba(255,255,255,0.04);">Bank (via API)</td><td style="padding:0.45rem 0.6rem; border-bottom:1px solid rgba(255,255,255,0.04); color:rgba(255,255,255,0.6);">Bank response code, timestamp, reference</td></tr>
+          <tr><td style="padding:0.45rem 0.6rem; border-bottom:1px solid rgba(255,255,255,0.04); color:#C4B5FD;">Retry Triggered</td><td style="padding:0.45rem 0.6rem; border-bottom:1px solid rgba(255,255,255,0.04);">System</td><td style="padding:0.45rem 0.6rem; border-bottom:1px solid rgba(255,255,255,0.04); color:rgba(255,255,255,0.6);">Attempt number, delay applied, error code</td></tr>
+          <tr><td style="padding:0.45rem 0.6rem; color:#C4B5FD;">IBAN / Data Modified</td><td style="padding:0.45rem 0.6rem;">Admin User</td><td style="padding:0.45rem 0.6rem; color:rgba(255,255,255,0.6);">Before value, after value, reason, user ID</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div>
+      <h3 style="font-size:1rem; color:#C4B5FD; margin-bottom:1rem;">🔐 Why This Matters</h3>
+      <div style="display:flex; flex-direction:column; gap:0.8rem;">
+        <div style="background:rgba(124,58,237,0.1); border:1px solid rgba(124,58,237,0.25); border-radius:10px; padding:1rem;">
+          <h4 style="font-size:0.88rem; color:#C4B5FD; margin-bottom:0.3rem;">Regulatory Compliance</h4>
+          <p style="font-size:0.8rem; color:rgba(255,255,255,0.65);">Financial regulators (SAMA, local banking authorities) require full records of who authorized transfers and when. EduPay generates compliance-ready reports on demand.</p>
+        </div>
+        <div style="background:rgba(124,58,237,0.1); border:1px solid rgba(124,58,237,0.25); border-radius:10px; padding:1rem;">
+          <h4 style="font-size:0.88rem; color:#C4B5FD; margin-bottom:0.3rem;">Fraud Detection</h4>
+          <p style="font-size:0.8rem; color:rgba(255,255,255,0.65);">Complete before/after records of every data change make it trivial to detect unauthorized IBAN modifications or approval fraud. Anomalies surface in the audit timeline instantly.</p>
+        </div>
+        <div style="background:rgba(124,58,237,0.1); border:1px solid rgba(124,58,237,0.25); border-radius:10px; padding:1rem;">
+          <h4 style="font-size:0.88rem; color:#C4B5FD; margin-bottom:0.3rem;">Dispute Resolution</h4>
+          <p style="font-size:0.8rem; color:rgba(255,255,255,0.65);">When a school disputes a settlement amount, Finance can pull the exact ledger trail and bank reference in under 2 minutes — ending multi-day email chains.</p>
+        </div>
+        <div style="background:rgba(124,58,237,0.1); border:1px solid rgba(124,58,237,0.25); border-radius:10px; padding:1rem;">
+          <h4 style="font-size:0.88rem; color:#C4B5FD; margin-bottom:0.3rem;">Immutability Guarantee</h4>
+          <p style="font-size:0.8rem; color:rgba(255,255,255,0.65);">Audit logs are append-only. No user — including system administrators — can delete or modify a log entry. This is enforced at the database level.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>EduPay Platform · Slide 14</span>
+    <span>Audit & Control</span>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════ SLIDE 15: BENEFITS ══════════════════════════════════════════ -->
+<section class="slide slide-benefits" id="s15">
+  <div class="slide-num">Slide 15 / 15</div>
+  <div class="section-label label-gold">Benefits & Value Proposition</div>
+  <h2 class="slide-heading">Why <span style="color:#FDE68A;">EduPay</span> Delivers Real Business Value</h2>
+
+  <div class="grid-4" style="margin-bottom:2rem;">
+    <div class="benefit-card">
+      <div class="benefit-icon">⚡</div>
+      <div class="benefit-stat">80%</div>
+      <h3>Faster Processing</h3>
+      <p>Automated workflows replace manual handoffs. Payments that took 3 days move in hours.</p>
+    </div>
+    <div class="benefit-card">
+      <div class="benefit-icon">🎯</div>
+      <div class="benefit-stat">99.9%</div>
+      <h3>Financial Accuracy</h3>
+      <p>Double-entry ledger, automated fee calculation, and three-way reconciliation eliminate errors.</p>
+    </div>
+    <div class="benefit-card">
+      <div class="benefit-icon">👁</div>
+      <div class="benefit-stat">100%</div>
+      <h3>Full Visibility</h3>
+      <p>Real-time dashboards mean Finance never has to chase status via email or phone.</p>
+    </div>
+    <div class="benefit-card">
+      <div class="benefit-icon">🛡</div>
+      <div class="benefit-stat">0</div>
+      <h3>Unauthorized Transfers</h3>
+      <p>Four-eyes approval, IBAN validation, and audit trails prevent unauthorized money movement.</p>
+    </div>
+  </div>
+
+  <div class="grid-3" style="margin-bottom:1.5rem;">
+    <div class="card">
+      <h3>🏫 For Schools</h3>
+      <ul>
+        <li>Predictable, on-time net settlements</li>
+        <li>Transparent fee deduction reporting</li>
+        <li>Downloadable settlement statements</li>
+        <li>Fewer disputes with Finance team</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>💼 For Finance Teams</h3>
+      <ul>
+        <li>Eliminated end-of-month reconciliation crunch</li>
+        <li>Instant audit report generation</li>
+        <li>Configurable approval thresholds</li>
+        <li>SLA monitoring and breach alerts</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>🏢 For the Organization</h3>
+      <ul>
+        <li>Regulatory-ready audit trail at all times</li>
+        <li>Reduced operational cost per transaction</li>
+        <li>Scalable to thousands of schools</li>
+        <li>Bank-agnostic integration layer</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Closing -->
+  <div style="background:linear-gradient(135deg, rgba(245,158,11,0.15) 0%, rgba(13,148,136,0.15) 100%); border:1px solid rgba(245,158,11,0.3); border-radius:14px; padding:1.5rem 2rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem;">
+    <div>
+      <p style="font-size:1rem; font-weight:700; color:var(--gold); margin-bottom:0.3rem;">Ready for the Next Step?</p>
+      <p style="font-size:0.85rem; color:rgba(255,255,255,0.7);">This prototype covers the full end-to-end scope. Next phase: detailed wireframes, API specification, and phased rollout planning.</p>
+    </div>
+    <div style="display:flex; gap:0.8rem; flex-wrap:wrap;">
+      <div style="background:rgba(245,158,11,0.2); border:1px solid rgba(245,158,11,0.4); border-radius:8px; padding:0.6rem 1.2rem; font-size:0.82rem; font-weight:700; color:var(--gold);">Phase 1: MVP Build</div>
+      <div style="background:rgba(13,148,136,0.2); border:1px solid rgba(13,148,136,0.4); border-radius:8px; padding:0.6rem 1.2rem; font-size:0.82rem; font-weight:700; color:#5EEAD4;">Phase 2: Bank Integration</div>
+      <div style="background:rgba(124,58,237,0.2); border:1px solid rgba(124,58,237,0.4); border-radius:8px; padding:0.6rem 1.2rem; font-size:0.82rem; font-weight:700; color:#C4B5FD;">Phase 3: Analytics</div>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>EduPay Platform · Slide 15</span>
+    <span>CONFIDENTIAL — For Internal Review Only · 2026</span>
+  </div>
+</section>
+
+</div><!-- end slide-wrapper -->
+
+<!-- ══════════════════════════════════════════ PROGRESS BAR ══════════════════════════════════════════ -->
+<div id="progress-bar" style="position:fixed; bottom:0; left:0; height:3px; background:linear-gradient(90deg, var(--gold), var(--teal)); transition:width 0.3s; z-index:200; width:0%;"></div>
+
+<script>
+  window.addEventListener('scroll', () => {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = (scrollTop / docHeight) * 100;
+    document.getElementById('progress-bar').style.width = pct + '%';
+  });
+</script>
+
+</body>
+</html>
