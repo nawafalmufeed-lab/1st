@@ -339,6 +339,16 @@
     <a href="#s13">Reconciliation</a>
     <a href="#s14">Audit</a>
     <a href="#s15">Benefits</a>
+    <a href="#s16">Security</a>
+    <a href="#s17">Alerts</a>
+    <a href="#s18">Reporting</a>
+    <a href="#s19">Bank API</a>
+    <a href="#s20">SLA</a>
+    <a href="#s21">Onboarding</a>
+    <a href="#s22">Roadmap</a>
+    <a href="#s23">Tech Stack</a>
+    <a href="#s24">Risk</a>
+    <a href="#s25">Metrics</a>
   </div>
 </nav>
 
@@ -1410,6 +1420,914 @@
 
   <div class="slide-footer">
     <span>EduPay Platform · Slide 15</span>
+    <span>CONFIDENTIAL — For Internal Review Only · 2026</span>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════ SLIDE 16: SECURITY ══════════════════════════════════════════ -->
+<section class="slide" style="background:linear-gradient(135deg,#050D1A 0%,#0A1E38 100%);" id="s16">
+  <div class="slide-num">Slide 16 / 25</div>
+  <div class="section-label label-red">Security & Access Control</div>
+  <h2 class="slide-heading">Built Secure <span style="color:#FCA5A5;">From the Ground Up</span></h2>
+
+  <div class="grid-3" style="margin-bottom:1.6rem;">
+    <div class="card" style="border-top:3px solid #EF4444;">
+      <div class="card-icon">🔑</div>
+      <h3>Role-Based Access Control (RBAC)</h3>
+      <p>Every feature, screen, and API endpoint is gated by role. A Reviewer cannot reach the Approve button — it does not render for them. Permissions are defined centrally and version-controlled.</p>
+    </div>
+    <div class="card" style="border-top:3px solid #F59E0B;">
+      <div class="card-icon">🔐</div>
+      <h3>Multi-Factor Authentication</h3>
+      <p>All users require MFA at login. Approvers performing transfers above a configurable threshold (e.g. SAR 50,000) are challenged with a second factor at the point of approval, not just at login.</p>
+    </div>
+    <div class="card" style="border-top:3px solid #3B82F6;">
+      <div class="card-icon">🛡</div>
+      <h3>Data Encryption</h3>
+      <p>IBAN and banking credentials are encrypted at rest (AES-256) and in transit (TLS 1.3). Encryption keys are managed via a dedicated Key Management Service — never stored alongside data.</p>
+    </div>
+    <div class="card" style="border-top:3px solid #10B981;">
+      <div class="card-icon">📍</div>
+      <h3>IP Allowlisting & Session Controls</h3>
+      <p>Admin and Approver accounts can be restricted to organization IP ranges. Sessions expire after configurable inactivity. Concurrent sessions from multiple devices trigger security alerts.</p>
+    </div>
+    <div class="card" style="border-top:3px solid #8B5CF6;">
+      <div class="card-icon">🔍</div>
+      <h3>API Security (Bank Layer)</h3>
+      <p>Bank API credentials are stored in a secrets vault — never in code or environment variables. Each outbound bank call is signed with a request HMAC. Responses are verified before processing.</p>
+    </div>
+    <div class="card" style="border-top:3px solid #EC4899;">
+      <div class="card-icon">🚨</div>
+      <h3>Anomaly Detection</h3>
+      <p>Automated alerts fire on: unusual approval volume from one user, IBAN changes shortly before a transfer, login from new geography, or approval outside business hours above threshold.</p>
+    </div>
+  </div>
+
+  <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+    <div style="flex:1; min-width:220px; background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.25); border-radius:10px; padding:1rem;">
+      <p style="font-size:0.8rem; font-weight:700; color:#FCA5A5; margin-bottom:0.4rem;">🔒 Segregation Enforced By System</p>
+      <p style="font-size:0.78rem; color:rgba(255,255,255,0.65);">The same user cannot review AND approve the same transaction. This is a hard constraint in the workflow engine, not just a policy document.</p>
+    </div>
+    <div style="flex:1; min-width:220px; background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.25); border-radius:10px; padding:1rem;">
+      <p style="font-size:0.8rem; font-weight:700; color:#FCD34D; margin-bottom:0.4rem;">🔏 IBAN Change Approval Gate</p>
+      <p style="font-size:0.78rem; color:rgba(255,255,255,0.65);">Any change to a school's IBAN requires a secondary approver confirmation and a 24-hour cooling period before it can be used for transfers.</p>
+    </div>
+    <div style="flex:1; min-width:220px; background:rgba(59,130,246,0.08); border:1px solid rgba(59,130,246,0.25); border-radius:10px; padding:1rem;">
+      <p style="font-size:0.8rem; font-weight:700; color:#93C5FD; margin-bottom:0.4rem;">📋 Penetration Testing Cadence</p>
+      <p style="font-size:0.78rem; color:rgba(255,255,255,0.65);">Assumed: quarterly external pen tests + annual security audit by an accredited third party as part of financial regulatory compliance requirements.</p>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>EduPay Platform · Slide 16</span>
+    <span>Security & Access Control</span>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════ SLIDE 17: NOTIFICATIONS ══════════════════════════════════════════ -->
+<section class="slide" style="background:linear-gradient(135deg,#060F1A 0%,#0C2A3A 100%);" id="s17">
+  <div class="slide-num">Slide 17 / 25</div>
+  <div class="section-label label-amber">Notifications & Alerts</div>
+  <h2 class="slide-heading">The Right Person Knows <span style="color:#FCD34D;">the Right Thing</span> at the Right Time</h2>
+
+  <p class="subtitle" style="margin-bottom:1.8rem;">EduPay's notification engine is event-driven — every meaningful status change pushes a targeted alert to the right role via the right channel, with no noise for irrelevant events.</p>
+
+  <div style="overflow-x:auto; margin-bottom:1.6rem;">
+    <table class="err-table" style="min-width:700px;">
+      <thead>
+        <tr>
+          <th>Event Trigger</th>
+          <th>Who is Notified</th>
+          <th>Channel</th>
+          <th>Priority</th>
+          <th>Action Required</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="color:#FCD34D;">New transaction arrives</td>
+          <td>All available Reviewers</td>
+          <td>In-app badge + email digest</td>
+          <td><span class="status-badge s-review" style="font-size:0.7rem;">Normal</span></td>
+          <td style="color:rgba(255,255,255,0.65);">Claim and review</td>
+        </tr>
+        <tr>
+          <td style="color:#FCD34D;">Review complete — pending approval</td>
+          <td>All Approvers</td>
+          <td>Email + in-app alert</td>
+          <td><span class="status-badge s-review" style="font-size:0.7rem;">Normal</span></td>
+          <td style="color:rgba(255,255,255,0.65);">Review and approve/reject</td>
+        </tr>
+        <tr>
+          <td style="color:#FCD34D;">Transaction approved</td>
+          <td>Reviewer who reviewed it</td>
+          <td>In-app notification</td>
+          <td><span class="status-badge s-await" style="font-size:0.7rem;">Info</span></td>
+          <td style="color:rgba(255,255,255,0.65);">None — informational</td>
+        </tr>
+        <tr>
+          <td style="color:#FCA5A5;">Transaction rejected</td>
+          <td>Reviewer who reviewed it</td>
+          <td>Email + in-app (with reason)</td>
+          <td><span class="status-badge s-failed" style="font-size:0.7rem;">High</span></td>
+          <td style="color:rgba(255,255,255,0.65);">Correct and resubmit</td>
+        </tr>
+        <tr>
+          <td style="color:#FCA5A5;">Bank transfer failed</td>
+          <td>Approver + Finance Manager</td>
+          <td>Email + SMS + in-app</td>
+          <td><span class="status-badge s-failed" style="font-size:0.7rem;">Critical</span></td>
+          <td style="color:rgba(255,255,255,0.65);">Investigate and manually retry</td>
+        </tr>
+        <tr>
+          <td style="color:#FCA5A5;">Max retries exhausted</td>
+          <td>Finance Manager + CFO</td>
+          <td>SMS + Email</td>
+          <td><span class="status-badge s-failed" style="font-size:0.7rem;">Critical</span></td>
+          <td style="color:rgba(255,255,255,0.65);">Manual intervention required</td>
+        </tr>
+        <tr>
+          <td style="color:#FCD34D;">SLA breach approaching (80%)</td>
+          <td>Reviewer assigned + Manager</td>
+          <td>In-app warning banner</td>
+          <td><span class="status-badge s-partial" style="font-size:0.7rem;">Warning</span></td>
+          <td style="color:rgba(255,255,255,0.65);">Expedite review</td>
+        </tr>
+        <tr>
+          <td style="color:#6EE7B7;">Daily settlement completed</td>
+          <td>Finance Manager + School Admins</td>
+          <td>Email with PDF summary</td>
+          <td><span class="status-badge s-await" style="font-size:0.7rem;">Info</span></td>
+          <td style="color:rgba(255,255,255,0.65);">None — record keeping</td>
+        </tr>
+        <tr>
+          <td style="color:#FCA5A5;">Reconciliation mismatch detected</td>
+          <td>Finance Manager + Head of Finance</td>
+          <td>Email + SMS</td>
+          <td><span class="status-badge s-failed" style="font-size:0.7rem;">Critical</span></td>
+          <td style="color:rgba(255,255,255,0.65);">Investigate discrepancy immediately</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="grid-3">
+    <div class="card">
+      <div class="card-icon">📧</div>
+      <h3>Email Notifications</h3>
+      <p>Rich HTML emails with transaction summary, action buttons, and direct deep-links into the relevant screen. No login required to see the summary.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">📱</div>
+      <h3>SMS for Critical Events</h3>
+      <p>SMS is reserved for Critical-priority events only — failed transfers, reconciliation mismatches, and max-retry exhaustions. Prevents alert fatigue.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔔</div>
+      <h3>In-App Notification Center</h3>
+      <p>Persistent bell icon with unread count. Notification history retained for 90 days. Users can configure per-event preferences (mute, channel override).</p>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>EduPay Platform · Slide 17</span>
+    <span>Notifications & Alerts</span>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════ SLIDE 18: REPORTING ══════════════════════════════════════════ -->
+<section class="slide" style="background:linear-gradient(135deg,#020C14 0%,#073040 100%);" id="s18">
+  <div class="slide-num">Slide 18 / 25</div>
+  <div class="section-label label-teal">Reporting & Analytics</div>
+  <h2 class="slide-heading">Data That <span style="color:#5EEAD4;">Drives Decisions</span></h2>
+
+  <div class="grid-2" style="margin-bottom:1.6rem;">
+
+    <div>
+      <h3 style="font-size:1rem; color:#5EEAD4; margin-bottom:1rem;">📊 Standard Reports (Out of the Box)</h3>
+      <div style="display:flex; flex-direction:column; gap:0.7rem;">
+        <div style="background:rgba(13,148,136,0.1); border-left:3px solid var(--teal); border-radius:0 8px 8px 0; padding:0.8rem 1rem;">
+          <p style="font-weight:700; font-size:0.85rem; margin-bottom:0.2rem;">Daily Transaction Summary</p>
+          <p style="font-size:0.78rem; color:rgba(255,255,255,0.6);">Total count, gross amount, platform fees earned, net transferred — broken by school and payment channel. Auto-generated at 23:59 every day.</p>
+        </div>
+        <div style="background:rgba(13,148,136,0.1); border-left:3px solid var(--teal); border-radius:0 8px 8px 0; padding:0.8rem 1rem;">
+          <p style="font-weight:700; font-size:0.85rem; margin-bottom:0.2rem;">School Settlement Statement</p>
+          <p style="font-size:0.78rem; color:rgba(255,255,255,0.6);">Per-school PDF: list of all transactions settled, amounts, bank reference, and running balance. Delivered to school finance contact after each settlement run.</p>
+        </div>
+        <div style="background:rgba(13,148,136,0.1); border-left:3px solid var(--teal); border-radius:0 8px 8px 0; padding:0.8rem 1rem;">
+          <p style="font-weight:700; font-size:0.85rem; margin-bottom:0.2rem;">Monthly Reconciliation Report</p>
+          <p style="font-size:0.78rem; color:rgba(255,255,255,0.6);">End-to-end match rate, unresolved exceptions list, total disputed amount, and resolution status. Used by Finance for month-end close.</p>
+        </div>
+        <div style="background:rgba(13,148,136,0.1); border-left:3px solid var(--teal); border-radius:0 8px 8px 0; padding:0.8rem 1rem;">
+          <p style="font-weight:700; font-size:0.85rem; margin-bottom:0.2rem;">Approver Performance Report</p>
+          <p style="font-size:0.78rem; color:rgba(255,255,255,0.6);">Average review-to-approval time, SLA breach rate, rejection rate, and transactions handled per reviewer/approver. Used for capacity planning.</p>
+        </div>
+        <div style="background:rgba(13,148,136,0.1); border-left:3px solid var(--teal); border-radius:0 8px 8px 0; padding:0.8rem 1rem;">
+          <p style="font-weight:700; font-size:0.85rem; margin-bottom:0.2rem;">Failed Transfer Report</p>
+          <p style="font-size:0.78rem; color:rgba(255,255,255,0.6);">All failed transfers in a period — error code breakdown, retry count, time to resolution, and school impact. Used to improve bank integration reliability.</p>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <h3 style="font-size:1rem; color:#5EEAD4; margin-bottom:1rem;">🔧 Custom Report Builder</h3>
+      <div class="screen-mock" style="margin-bottom:1rem;">
+        <div class="screen-bar">
+          <div class="dot d-red"></div><div class="dot d-yellow"></div><div class="dot d-green"></div>
+          <span>EduPay · Custom Reports</span>
+        </div>
+        <div class="screen-body">
+          <p style="color:#5EEAD4; font-weight:700; margin-bottom:0.7rem;">Build Your Own Report</p>
+          <div style="display:flex; flex-direction:column; gap:0.4rem; font-size:0.78rem; color:rgba(255,255,255,0.7);">
+            <div style="display:flex; gap:0.5rem; align-items:center;"><span style="color:#6EE7B7;">✓</span> Select date range (day / week / month / custom)</div>
+            <div style="display:flex; gap:0.5rem; align-items:center;"><span style="color:#6EE7B7;">✓</span> Filter by school, region, payment channel</div>
+            <div style="display:flex; gap:0.5rem; align-items:center;"><span style="color:#6EE7B7;">✓</span> Choose metrics: volume, fees, net, failure rate</div>
+            <div style="display:flex; gap:0.5rem; align-items:center;"><span style="color:#6EE7B7;">✓</span> Group by: school / day / week / approver</div>
+            <div style="display:flex; gap:0.5rem; align-items:center;"><span style="color:#6EE7B7;">✓</span> Export: CSV · Excel · PDF</div>
+            <div style="display:flex; gap:0.5rem; align-items:center;"><span style="color:#6EE7B7;">✓</span> Schedule: send to email on a recurring basis</div>
+          </div>
+        </div>
+      </div>
+
+      <h3 style="font-size:1rem; color:#5EEAD4; margin-bottom:0.8rem;">📤 Export & Integration</h3>
+      <div class="grid-2" style="gap:0.7rem;">
+        <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:0.7rem; font-size:0.78rem; text-align:center;">
+          <div style="font-size:1.2rem; margin-bottom:0.3rem;">📄</div>
+          <p style="font-weight:700; margin-bottom:0.2rem;">PDF Statements</p>
+          <p style="color:rgba(255,255,255,0.55);">Printable, signed-ready format for auditors</p>
+        </div>
+        <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:0.7rem; font-size:0.78rem; text-align:center;">
+          <div style="font-size:1.2rem; margin-bottom:0.3rem;">📊</div>
+          <p style="font-weight:700; margin-bottom:0.2rem;">Excel / CSV</p>
+          <p style="color:rgba(255,255,255,0.55);">For further analysis in ERP systems</p>
+        </div>
+        <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:0.7rem; font-size:0.78rem; text-align:center;">
+          <div style="font-size:1.2rem; margin-bottom:0.3rem;">🔗</div>
+          <p style="font-weight:700; margin-bottom:0.2rem;">API Data Feed</p>
+          <p style="color:rgba(255,255,255,0.55);">Push report data to external BI tools</p>
+        </div>
+        <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:0.7rem; font-size:0.78rem; text-align:center;">
+          <div style="font-size:1.2rem; margin-bottom:0.3rem;">📧</div>
+          <p style="font-weight:700; margin-bottom:0.2rem;">Scheduled Email</p>
+          <p style="color:rgba(255,255,255,0.55);">Auto-deliver to stakeholders on cadence</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>EduPay Platform · Slide 18</span>
+    <span>Reporting & Analytics</span>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════ SLIDE 19: BANK INTEGRATION ══════════════════════════════════════════ -->
+<section class="slide" style="background:linear-gradient(135deg,#020A14 0%,#082840 100%);" id="s19">
+  <div class="slide-num">Slide 19 / 25</div>
+  <div class="section-label label-blue">Bank Integration Architecture</div>
+  <h2 class="slide-heading">How We Connect to <span style="color:#93C5FD;">the Banking System</span></h2>
+
+  <div class="grid-2" style="margin-bottom:1.6rem;">
+    <div>
+      <h3 style="font-size:1rem; color:#93C5FD; margin-bottom:1rem;">🏦 Integration Methods Supported</h3>
+      <div style="display:flex; flex-direction:column; gap:0.8rem;">
+        <div style="background:rgba(26,86,219,0.12); border:1px solid rgba(26,86,219,0.3); border-radius:10px; padding:1rem;">
+          <p style="font-weight:700; font-size:0.88rem; color:#93C5FD; margin-bottom:0.4rem;">REST API (Primary)</p>
+          <p style="font-size:0.8rem; color:rgba(255,255,255,0.65);">Modern banks expose REST endpoints for initiating transfers, checking status, and receiving webhooks on completion. EduPay's Bank Adapter handles auth, signing, and retries transparently.</p>
+        </div>
+        <div style="background:rgba(26,86,219,0.12); border:1px solid rgba(26,86,219,0.3); border-radius:10px; padding:1rem;">
+          <p style="font-weight:700; font-size:0.88rem; color:#93C5FD; margin-bottom:0.4rem;">SFTP File-Based (Legacy Banks)</p>
+          <p style="font-size:0.8rem; color:rgba(255,255,255,0.65);">For banks that don't offer real-time APIs, EduPay generates ISO 20022 / MT103 payment files, drops them on a secure SFTP, and imports the bank's response files to update statuses.</p>
+        </div>
+        <div style="background:rgba(26,86,219,0.12); border:1px solid rgba(26,86,219,0.3); border-radius:10px; padding:1rem;">
+          <p style="font-weight:700; font-size:0.88rem; color:#93C5FD; margin-bottom:0.4rem;">Bank Webhooks (Event Push)</p>
+          <p style="font-size:0.8rem; color:rgba(255,255,255,0.65);">Where available, the bank pushes transfer confirmations or failure notices to EduPay's secure webhook endpoint. This enables near-real-time status updates without polling overhead.</p>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <h3 style="font-size:1rem; color:#93C5FD; margin-bottom:1rem;">🔌 Bank Adapter Pattern</h3>
+      <div class="screen-mock">
+        <div class="screen-bar">
+          <div class="dot d-red"></div><div class="dot d-yellow"></div><div class="dot d-green"></div>
+          <span>Bank Integration · Adapter Layer</span>
+        </div>
+        <div class="screen-body" style="font-family:monospace; font-size:0.75rem; color:#6EE7B7; line-height:1.7;">
+          <span style="color:#5EEAD4;">Settlement Engine</span><br>
+          &nbsp;&nbsp;&nbsp;↓ calls<br>
+          <span style="color:#93C5FD;">BankAdapter Interface</span><br>
+          &nbsp;&nbsp;&nbsp;→ <span style="color:#FCD34D;">initiateTransfer(amount, iban, ref)</span><br>
+          &nbsp;&nbsp;&nbsp;→ <span style="color:#FCD34D;">getTransferStatus(bankRef)</span><br>
+          &nbsp;&nbsp;&nbsp;→ <span style="color:#FCD34D;">onWebhookReceived(payload)</span><br>
+          <br>
+          <span style="color:rgba(255,255,255,0.3);">Implementations:</span><br>
+          &nbsp;&nbsp;&nbsp;<span style="color:#C4B5FD;">SAMABankAdapter</span> → REST API<br>
+          &nbsp;&nbsp;&nbsp;<span style="color:#C4B5FD;">LegacyBankAdapter</span> → SFTP files<br>
+          &nbsp;&nbsp;&nbsp;<span style="color:#C4B5FD;">SandboxAdapter</span> → for testing
+        </div>
+      </div>
+      <div class="callout" style="margin-top:1rem;">
+        <p>The adapter pattern means adding a new bank requires only implementing the adapter interface — zero changes to the Settlement Engine, Transaction, or Ledger modules.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-3">
+    <div class="card">
+      <div class="card-icon">🔄</div>
+      <h3>Idempotency Keys</h3>
+      <p>Every bank API call includes a unique idempotency key derived from the transfer ID. If a network timeout causes a duplicate call, the bank deduplicates it — money is never sent twice.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🗂</div>
+      <h3>Bank Reference Tracking</h3>
+      <p>The bank's own reference number (e.g. SWIFT end-to-end ID) is stored on every transfer record, enabling exact reconciliation against bank statements.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🧪</div>
+      <h3>Sandbox & Production Modes</h3>
+      <p>Each bank adapter ships with a sandbox mode that simulates success, failure, and timeout responses — enabling full end-to-end testing without touching real bank accounts.</p>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>EduPay Platform · Slide 19</span>
+    <span>Bank Integration Architecture</span>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════ SLIDE 20: SLA & PERFORMANCE ══════════════════════════════════════════ -->
+<section class="slide" style="background:linear-gradient(135deg,#030D1A 0%,#0A2A40 100%);" id="s20">
+  <div class="slide-num">Slide 20 / 25</div>
+  <div class="section-label label-teal">SLA & Performance Targets</div>
+  <h2 class="slide-heading">Service Level Commitments — <span style="color:#5EEAD4;">Holding the System Accountable</span></h2>
+
+  <div class="grid-4" style="margin-bottom:1.8rem;">
+    <div class="metric-card">
+      <div class="metric-val" style="color:#FCD34D;">4 hrs</div>
+      <div class="metric-lbl">Review SLA</div>
+      <div class="metric-delta" style="color:rgba(255,255,255,0.5);">From receipt to review complete</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-val" style="color:#FCD34D;">2 hrs</div>
+      <div class="metric-lbl">Approval SLA</div>
+      <div class="metric-delta" style="color:rgba(255,255,255,0.5);">From review complete to decision</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-val" style="color:#6EE7B7;">99.5%</div>
+      <div class="metric-lbl">Transfer Success Rate</div>
+      <div class="metric-delta" style="color:rgba(255,255,255,0.5);">Target after retries included</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-val" style="color:#93C5FD;">99.9%</div>
+      <div class="metric-lbl">Platform Uptime</div>
+      <div class="metric-delta" style="color:rgba(255,255,255,0.5);">&lt;9 hrs downtime per year</div>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-bottom:1.5rem;">
+    <div>
+      <h3 style="font-size:1rem; color:#5EEAD4; margin-bottom:1rem;">⏱ SLA Breach Escalation Path</h3>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot" style="background:#FCD34D;"></div>
+          <h4>80% of SLA Elapsed — Warning</h4>
+          <p>In-app warning badge appears on the transaction. Reviewer's manager receives a soft alert. No escalation yet.</p>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot" style="background:#F97316;"></div>
+          <h4>100% of SLA Elapsed — Breach</h4>
+          <p>Transaction flagged as SLA Breached in red. Finance Manager notified via email + SMS. Appears top of queue.</p>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot" style="background:#EF4444;"></div>
+          <h4>150% of SLA Elapsed — Escalation</h4>
+          <p>Head of Finance and Operations Manager notified. Transaction auto-reassigned if reviewer is inactive.</p>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot" style="background:#DC2626;"></div>
+          <h4>Monthly SLA Report</h4>
+          <p>Aggregate breach count, average resolution time, and breach root cause categorization reported to leadership.</p>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <h3 style="font-size:1rem; color:#5EEAD4; margin-bottom:1rem;">📈 Performance Benchmarks (Assumed)</h3>
+      <div style="display:flex; flex-direction:column; gap:0.7rem;">
+        <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:0.9rem 1.1rem;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">
+            <span style="font-size:0.85rem; font-weight:700;">Transaction Throughput</span>
+            <span style="color:#6EE7B7; font-weight:700;">10,000 / day</span>
+          </div>
+          <div style="background:rgba(255,255,255,0.07); border-radius:4px; height:6px;"><div style="background:var(--teal); width:70%; height:100%; border-radius:4px;"></div></div>
+          <p style="font-size:0.72rem; color:rgba(255,255,255,0.45); margin-top:0.3rem;">Current capacity · scales horizontally</p>
+        </div>
+        <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:0.9rem 1.1rem;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">
+            <span style="font-size:0.85rem; font-weight:700;">API Response Time (p95)</span>
+            <span style="color:#6EE7B7; font-weight:700;">&lt;300ms</span>
+          </div>
+          <div style="background:rgba(255,255,255,0.07); border-radius:4px; height:6px;"><div style="background:var(--teal); width:90%; height:100%; border-radius:4px;"></div></div>
+          <p style="font-size:0.72rem; color:rgba(255,255,255,0.45); margin-top:0.3rem;">For all internal API endpoints</p>
+        </div>
+        <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:0.9rem 1.1rem;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">
+            <span style="font-size:0.85rem; font-weight:700;">Settlement Job Duration</span>
+            <span style="color:#6EE7B7; font-weight:700;">&lt;15 mins</span>
+          </div>
+          <div style="background:rgba(255,255,255,0.07); border-radius:4px; height:6px;"><div style="background:var(--teal); width:55%; height:100%; border-radius:4px;"></div></div>
+          <p style="font-size:0.72rem; color:rgba(255,255,255,0.45); margin-top:0.3rem;">For up to 10,000 transactions/batch</p>
+        </div>
+        <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:0.9rem 1.1rem;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">
+            <span style="font-size:0.85rem; font-weight:700;">Audit Log Query (1M rows)</span>
+            <span style="color:#6EE7B7; font-weight:700;">&lt;2 secs</span>
+          </div>
+          <div style="background:rgba(255,255,255,0.07); border-radius:4px; height:6px;"><div style="background:var(--teal); width:80%; height:100%; border-radius:4px;"></div></div>
+          <p style="font-size:0.72rem; color:rgba(255,255,255,0.45); margin-top:0.3rem;">Indexed by transaction ID + timestamp</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>EduPay Platform · Slide 20</span>
+    <span>SLA & Performance Targets</span>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════ SLIDE 21: SCHOOL ONBOARDING ══════════════════════════════════════════ -->
+<section class="slide" style="background:linear-gradient(135deg,#030B14 0%,#0A2538 100%);" id="s21">
+  <div class="slide-num">Slide 21 / 25</div>
+  <div class="section-label label-blue">School Onboarding & Account Management</div>
+  <h2 class="slide-heading">Getting Schools <span style="color:#93C5FD;">Ready to Receive</span></h2>
+
+  <p class="subtitle" style="margin-bottom:1.8rem;">Before a school can receive any settlement, its account must be fully verified and approved. This is the onboarding gate that protects against fraud and ensures financial accuracy from day one.</p>
+
+  <div class="grid-2" style="margin-bottom:1.6rem;">
+    <div>
+      <h3 style="font-size:1rem; color:#93C5FD; margin-bottom:1rem;">🏫 School Onboarding Steps</h3>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot" style="background:#93C5FD;"></div>
+          <h4>Step 1 — Basic Registration</h4>
+          <p>School name, commercial registration number, contact email, phone. Admin account created for the school's finance contact.</p>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot" style="background:#93C5FD;"></div>
+          <h4>Step 2 — Document Upload</h4>
+          <p>Commercial license, VAT certificate, authorized signatory ID. Documents reviewed by Operations team within 2 business days.</p>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot" style="background:#93C5FD;"></div>
+          <h4>Step 3 — IBAN Submission & Verification</h4>
+          <p>School submits their bank IBAN. System performs IBAN format validation immediately. A micro-deposit test (e.g. SAR 1.00) is sent to confirm the account is live and matches the school name.</p>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot" style="background:#FCD34D;"></div>
+          <h4>Step 4 — Fee Tier Assignment</h4>
+          <p>Operations assigns the applicable platform fee rate (e.g. 2.0%, 2.5%, 3.0%) based on the school's contract tier. This rate is locked and version-tracked.</p>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot" style="background:#6EE7B7;"></div>
+          <h4>Step 5 — Account Activated</h4>
+          <p>School status set to Active. School admin receives welcome email with portal access. They are now eligible to receive settlements.</p>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <h3 style="font-size:1rem; color:#93C5FD; margin-bottom:1rem;">⚙️ Ongoing Account Management</h3>
+      <div style="display:flex; flex-direction:column; gap:0.8rem;">
+        <div class="card">
+          <h3>IBAN Change Request</h3>
+          <p>School submits a change request with supporting documents. Requires dual approval from Finance + Operations. 24-hour holding period before new IBAN goes live. Old IBAN logged in history permanently.</p>
+        </div>
+        <div class="card">
+          <h3>Fee Rate Amendment</h3>
+          <p>Any fee rate change requires Operations approval and takes effect from a specified future date — never retroactively. Historical rates are preserved for audit and settlement accuracy.</p>
+        </div>
+        <div class="card">
+          <h3>Account Suspension</h3>
+          <p>If a school has outstanding disputes or compliance issues, their account can be suspended: incoming payments still accepted but settlements are held until the account is reinstated.</p>
+        </div>
+        <div class="card">
+          <h3>School Portal Access</h3>
+          <p>Each school's finance contact gets a read-only view: their own settlements, transaction history, and downloadable statements. They cannot see data for other schools.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>EduPay Platform · Slide 21</span>
+    <span>School Onboarding & Account Management</span>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════ SLIDE 22: ROADMAP ══════════════════════════════════════════ -->
+<section class="slide" style="background:linear-gradient(135deg,#040B14 0%,#0B2030 100%);" id="s22">
+  <div class="slide-num">Slide 22 / 25</div>
+  <div class="section-label label-gold">Implementation Roadmap</div>
+  <h2 class="slide-heading">Phased Delivery — <span style="color:#FDE68A;">Value at Every Stage</span></h2>
+
+  <div style="display:flex; flex-direction:column; gap:1rem; margin-bottom:1.8rem;">
+
+    <!-- Phase 1 -->
+    <div style="background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.25); border-radius:12px; padding:1.2rem 1.5rem; display:flex; gap:1.5rem; align-items:flex-start; flex-wrap:wrap;">
+      <div style="min-width:130px;">
+        <div style="font-size:0.7rem; text-transform:uppercase; letter-spacing:0.1em; color:#FCD34D; margin-bottom:0.2rem;">Phase 1</div>
+        <div style="font-size:1rem; font-weight:800; color:var(--gold);">Months 1–3</div>
+        <div style="font-size:0.75rem; color:rgba(255,255,255,0.4); margin-top:0.3rem;">Foundation & Core MVP</div>
+      </div>
+      <div style="flex:1; min-width:200px;">
+        <ul style="font-size:0.82rem; color:rgba(255,255,255,0.75); padding-left:1rem; column-count:2; column-gap:1.5rem;">
+          <li>Transaction creation & status machine</li>
+          <li>Reviewer workflow (claim, review, submit)</li>
+          <li>Approver workflow (approve/reject with reason)</li>
+          <li>Basic ledger entries (gross/fee/net)</li>
+          <li>School account management (IBAN storage)</li>
+          <li>User management & RBAC</li>
+          <li>Audit log for all state transitions</li>
+          <li>Email notifications (basic)</li>
+        </ul>
+      </div>
+      <div style="min-width:130px; text-align:center; background:rgba(245,158,11,0.15); border-radius:8px; padding:0.8rem;">
+        <div style="font-size:1.2rem; font-weight:800; color:var(--gold);">Pilot Ready</div>
+        <div style="font-size:0.72rem; color:rgba(255,255,255,0.5); margin-top:0.2rem;">Manual bank transfer — no API yet</div>
+      </div>
+    </div>
+
+    <!-- Phase 2 -->
+    <div style="background:rgba(13,148,136,0.08); border:1px solid rgba(13,148,136,0.25); border-radius:12px; padding:1.2rem 1.5rem; display:flex; gap:1.5rem; align-items:flex-start; flex-wrap:wrap;">
+      <div style="min-width:130px;">
+        <div style="font-size:0.7rem; text-transform:uppercase; letter-spacing:0.1em; color:#5EEAD4; margin-bottom:0.2rem;">Phase 2</div>
+        <div style="font-size:1rem; font-weight:800; color:var(--teal);">Months 4–6</div>
+        <div style="font-size:0.75rem; color:rgba(255,255,255,0.4); margin-top:0.3rem;">Bank Integration & Automation</div>
+      </div>
+      <div style="flex:1; min-width:200px;">
+        <ul style="font-size:0.82rem; color:rgba(255,255,255,0.75); padding-left:1rem; column-count:2; column-gap:1.5rem;">
+          <li>Bank API adapter (REST)</li>
+          <li>Automated transfer initiation on approval</li>
+          <li>Transfer status polling + webhooks</li>
+          <li>Retry engine (exponential backoff)</li>
+          <li>Daily settlement job</li>
+          <li>School IBAN micro-deposit verification</li>
+          <li>SMS critical alerts</li>
+          <li>Reconciliation engine (basic)</li>
+        </ul>
+      </div>
+      <div style="min-width:130px; text-align:center; background:rgba(13,148,136,0.15); border-radius:8px; padding:0.8rem;">
+        <div style="font-size:1.2rem; font-weight:800; color:var(--teal);">Full STP</div>
+        <div style="font-size:0.72rem; color:rgba(255,255,255,0.5); margin-top:0.2rem;">Straight-through processing live</div>
+      </div>
+    </div>
+
+    <!-- Phase 3 -->
+    <div style="background:rgba(124,58,237,0.08); border:1px solid rgba(124,58,237,0.25); border-radius:12px; padding:1.2rem 1.5rem; display:flex; gap:1.5rem; align-items:flex-start; flex-wrap:wrap;">
+      <div style="min-width:130px;">
+        <div style="font-size:0.7rem; text-transform:uppercase; letter-spacing:0.1em; color:#C4B5FD; margin-bottom:0.2rem;">Phase 3</div>
+        <div style="font-size:1rem; font-weight:800; color:#7C3AED;">Months 7–9</div>
+        <div style="font-size:0.75rem; color:rgba(255,255,255,0.4); margin-top:0.3rem;">Analytics, Reporting & Scale</div>
+      </div>
+      <div style="flex:1; min-width:200px;">
+        <ul style="font-size:0.82rem; color:rgba(255,255,255,0.75); padding-left:1rem; column-count:2; column-gap:1.5rem;">
+          <li>Full reporting dashboard</li>
+          <li>Custom report builder</li>
+          <li>Three-way reconciliation engine</li>
+          <li>School self-service portal</li>
+          <li>Multi-bank adapter support</li>
+          <li>SLA monitoring & breach alerts</li>
+          <li>Anomaly detection rules</li>
+          <li>Regulatory compliance reporting</li>
+        </ul>
+      </div>
+      <div style="min-width:130px; text-align:center; background:rgba(124,58,237,0.15); border-radius:8px; padding:0.8rem;">
+        <div style="font-size:1.2rem; font-weight:800; color:#C4B5FD;">GA Release</div>
+        <div style="font-size:0.72rem; color:rgba(255,255,255,0.5); margin-top:0.2rem;">Production-grade, audit-ready</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <p>Each phase delivers usable, production-ready functionality. Phase 1 alone eliminates the manual approval chaos. Phase 2 removes the manual bank transfer bottleneck. Phase 3 closes the reporting and compliance gap.</p>
+  </div>
+
+  <div class="slide-footer">
+    <span>EduPay Platform · Slide 22</span>
+    <span>Implementation Roadmap</span>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════ SLIDE 23: TECH STACK ══════════════════════════════════════════ -->
+<section class="slide" style="background:linear-gradient(135deg,#030814 0%,#091C38 100%);" id="s23">
+  <div class="slide-num">Slide 23 / 25</div>
+  <div class="section-label label-blue">Technology Stack</div>
+  <h2 class="slide-heading">Built on <span style="color:#93C5FD;">Proven, Scalable Technology</span></h2>
+
+  <p class="subtitle" style="margin-bottom:1.8rem;">Technology choices are driven by three principles: reliability (money cannot be lost), auditability (every action traceable), and maintainability (the team can own it long-term).</p>
+
+  <div class="grid-3" style="margin-bottom:1.6rem;">
+    <div>
+      <h3 style="font-size:0.9rem; color:#93C5FD; margin-bottom:0.9rem; text-transform:uppercase; letter-spacing:0.08em;">Frontend</h3>
+      <div style="display:flex; flex-direction:column; gap:0.5rem;">
+        <div style="background:rgba(26,86,219,0.1); border:1px solid rgba(26,86,219,0.2); border-radius:8px; padding:0.65rem 0.9rem; font-size:0.82rem;">
+          <strong>React / Next.js</strong><br><span style="color:rgba(255,255,255,0.55); font-size:0.75rem;">Server-side rendering for fast initial load, SEO-ready admin screens</span>
+        </div>
+        <div style="background:rgba(26,86,219,0.1); border:1px solid rgba(26,86,219,0.2); border-radius:8px; padding:0.65rem 0.9rem; font-size:0.82rem;">
+          <strong>Tailwind CSS</strong><br><span style="color:rgba(255,255,255,0.55); font-size:0.75rem;">Consistent design system, responsive layouts</span>
+        </div>
+        <div style="background:rgba(26,86,219,0.1); border:1px solid rgba(26,86,219,0.2); border-radius:8px; padding:0.65rem 0.9rem; font-size:0.82rem;">
+          <strong>React Query / Zustand</strong><br><span style="color:rgba(255,255,255,0.55); font-size:0.75rem;">Server state management, optimistic UI updates</span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <h3 style="font-size:0.9rem; color:#5EEAD4; margin-bottom:0.9rem; text-transform:uppercase; letter-spacing:0.08em;">Backend & API</h3>
+      <div style="display:flex; flex-direction:column; gap:0.5rem;">
+        <div style="background:rgba(13,148,136,0.1); border:1px solid rgba(13,148,136,0.2); border-radius:8px; padding:0.65rem 0.9rem; font-size:0.82rem;">
+          <strong>Node.js / NestJS</strong><br><span style="color:rgba(255,255,255,0.55); font-size:0.75rem;">Structured, modular API with built-in DI and validation</span>
+        </div>
+        <div style="background:rgba(13,148,136,0.1); border:1px solid rgba(13,148,136,0.2); border-radius:8px; padding:0.65rem 0.9rem; font-size:0.82rem;">
+          <strong>PostgreSQL</strong><br><span style="color:rgba(255,255,255,0.55); font-size:0.75rem;">ACID-compliant, row-level locking for ledger integrity</span>
+        </div>
+        <div style="background:rgba(13,148,136,0.1); border:1px solid rgba(13,148,136,0.2); border-radius:8px; padding:0.65rem 0.9rem; font-size:0.82rem;">
+          <strong>Redis</strong><br><span style="color:rgba(255,255,255,0.55); font-size:0.75rem;">Job queues, session storage, idempotency key cache</span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <h3 style="font-size:0.9rem; color:#FCD34D; margin-bottom:0.9rem; text-transform:uppercase; letter-spacing:0.08em;">Infrastructure</h3>
+      <div style="display:flex; flex-direction:column; gap:0.5rem;">
+        <div style="background:rgba(245,158,11,0.1); border:1px solid rgba(245,158,11,0.2); border-radius:8px; padding:0.65rem 0.9rem; font-size:0.82rem;">
+          <strong>AWS / Azure (Cloud)</strong><br><span style="color:rgba(255,255,255,0.55); font-size:0.75rem;">Multi-AZ deployment, 99.9% uptime SLA</span>
+        </div>
+        <div style="background:rgba(245,158,11,0.1); border:1px solid rgba(245,158,11,0.2); border-radius:8px; padding:0.65rem 0.9rem; font-size:0.82rem;">
+          <strong>BullMQ (Job Scheduler)</strong><br><span style="color:rgba(255,255,255,0.55); font-size:0.75rem;">Reliable cron jobs for settlement, retries, reconciliation</span>
+        </div>
+        <div style="background:rgba(245,158,11,0.1); border:1px solid rgba(245,158,11,0.2); border-radius:8px; padding:0.65rem 0.9rem; font-size:0.82rem;">
+          <strong>Docker + Kubernetes</strong><br><span style="color:rgba(255,255,255,0.55); font-size:0.75rem;">Container orchestration, horizontal scaling, zero-downtime deploys</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div style="background:rgba(220,38,38,0.08); border:1px solid rgba(220,38,38,0.2); border-radius:10px; padding:1rem;">
+      <h3 style="color:#FCA5A5; font-size:0.9rem; margin-bottom:0.5rem;">🔒 Financial Data Constraints</h3>
+      <ul style="font-size:0.8rem; color:rgba(255,255,255,0.7); padding-left:1rem;">
+        <li>All money amounts stored as integers (fils/halala) — no floating point arithmetic</li>
+        <li>All database transactions use serializable isolation for ledger writes</li>
+        <li>Audit log table has a database-level trigger — no application code can bypass it</li>
+        <li>Point-in-time recovery enabled on database (RPO &lt; 5 minutes)</li>
+      </ul>
+    </div>
+    <div style="background:rgba(13,148,136,0.08); border:1px solid rgba(13,148,136,0.2); border-radius:10px; padding:1rem;">
+      <h3 style="color:#5EEAD4; font-size:0.9rem; margin-bottom:0.5rem;">📦 Third-Party Services</h3>
+      <ul style="font-size:0.8rem; color:rgba(255,255,255,0.7); padding-left:1rem;">
+        <li>SendGrid / AWS SES — transactional email delivery</li>
+        <li>Twilio / Unifonic — SMS for critical alerts (Arabic + English)</li>
+        <li>AWS KMS — encryption key management</li>
+        <li>DataDog / New Relic — application performance monitoring</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>EduPay Platform · Slide 23</span>
+    <span>Technology Stack</span>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════ SLIDE 24: RISK & COMPLIANCE ══════════════════════════════════════════ -->
+<section class="slide" style="background:linear-gradient(135deg,#0A0514 0%,#1E0A38 100%);" id="s24">
+  <div class="slide-num">Slide 24 / 25</div>
+  <div class="section-label label-purple">Risk & Compliance Framework</div>
+  <h2 class="slide-heading">Risks Identified — <span style="color:#C4B5FD;">Controls in Place</span></h2>
+
+  <div style="overflow-x:auto; margin-bottom:1.6rem;">
+    <table class="err-table" style="min-width:750px;">
+      <thead>
+        <tr>
+          <th>Risk</th>
+          <th>Category</th>
+          <th>Likelihood</th>
+          <th>Impact</th>
+          <th>Control / Mitigation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="color:#C4B5FD;">Fraudulent IBAN change</td>
+          <td>Fraud</td>
+          <td><span class="status-badge s-partial" style="font-size:0.7rem;">Medium</span></td>
+          <td><span class="status-badge s-failed" style="font-size:0.7rem;">High</span></td>
+          <td style="color:rgba(255,255,255,0.7);">Dual approval + 24h hold + micro-deposit verification + audit log</td>
+        </tr>
+        <tr>
+          <td style="color:#C4B5FD;">Double payment to school</td>
+          <td>Operational</td>
+          <td><span class="status-badge s-await" style="font-size:0.7rem;">Low</span></td>
+          <td><span class="status-badge s-failed" style="font-size:0.7rem;">High</span></td>
+          <td style="color:rgba(255,255,255,0.7);">Idempotency keys on all bank API calls + transfer state machine prevents re-submission</td>
+        </tr>
+        <tr>
+          <td style="color:#C4B5FD;">Bank API credential leak</td>
+          <td>Security</td>
+          <td><span class="status-badge s-await" style="font-size:0.7rem;">Low</span></td>
+          <td><span class="status-badge s-failed" style="font-size:0.7rem;">Critical</span></td>
+          <td style="color:rgba(255,255,255,0.7);">Secrets vault (KMS) + no credentials in code or config files + quarterly rotation</td>
+        </tr>
+        <tr>
+          <td style="color:#C4B5FD;">Reviewer/Approver collusion</td>
+          <td>Fraud</td>
+          <td><span class="status-badge s-await" style="font-size:0.7rem;">Low</span></td>
+          <td><span class="status-badge s-failed" style="font-size:0.7rem;">High</span></td>
+          <td style="color:rgba(255,255,255,0.7);">Enforced segregation of duties + anomaly detection for unusual approval patterns</td>
+        </tr>
+        <tr>
+          <td style="color:#C4B5FD;">Settlement job failure</td>
+          <td>Operational</td>
+          <td><span class="status-badge s-review" style="font-size:0.7rem;">Medium</span></td>
+          <td><span class="status-badge s-partial" style="font-size:0.7rem;">Medium</span></td>
+          <td style="color:rgba(255,255,255,0.7);">Job monitoring with instant alert + automatic retry + manual re-trigger UI</td>
+        </tr>
+        <tr>
+          <td style="color:#C4B5FD;">Regulatory audit request</td>
+          <td>Compliance</td>
+          <td><span class="status-badge s-review" style="font-size:0.7rem;">High</span></td>
+          <td><span class="status-badge s-partial" style="font-size:0.7rem;">Medium</span></td>
+          <td style="color:rgba(255,255,255,0.7);">Complete audit trail + on-demand compliance report export + immutable logs</td>
+        </tr>
+        <tr>
+          <td style="color:#C4B5FD;">Database corruption / data loss</td>
+          <td>Technical</td>
+          <td><span class="status-badge s-await" style="font-size:0.7rem;">Very Low</span></td>
+          <td><span class="status-badge s-failed" style="font-size:0.7rem;">Critical</span></td>
+          <td style="color:rgba(255,255,255,0.7);">PITR backups (RPO &lt;5min), daily snapshots, multi-AZ replication, tested restore process</td>
+        </tr>
+        <tr>
+          <td style="color:#C4B5FD;">Fee rate misconfiguration</td>
+          <td>Operational</td>
+          <td><span class="status-badge s-review" style="font-size:0.7rem;">Medium</span></td>
+          <td><span class="status-badge s-review" style="font-size:0.7rem;">Medium</span></td>
+          <td style="color:rgba(255,255,255,0.7);">Fee locked at approval time, not transfer time + version-controlled rate history per school</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="grid-3">
+    <div style="background:rgba(124,58,237,0.1); border:1px solid rgba(124,58,237,0.25); border-radius:10px; padding:1rem;">
+      <p style="font-size:0.82rem; font-weight:700; color:#C4B5FD; margin-bottom:0.4rem;">📋 Compliance Standards</p>
+      <ul style="font-size:0.78rem; color:rgba(255,255,255,0.65); padding-left:1rem;">
+        <li>SAMA Open Banking framework</li>
+        <li>PCI-DSS (if card data in scope)</li>
+        <li>ISO 27001 information security</li>
+        <li>Local data residency requirements</li>
+      </ul>
+    </div>
+    <div style="background:rgba(124,58,237,0.1); border:1px solid rgba(124,58,237,0.25); border-radius:10px; padding:1rem;">
+      <p style="font-size:0.82rem; font-weight:700; color:#C4B5FD; margin-bottom:0.4rem;">🔍 Ongoing Risk Reviews</p>
+      <ul style="font-size:0.78rem; color:rgba(255,255,255,0.65); padding-left:1rem;">
+        <li>Monthly security access review</li>
+        <li>Quarterly penetration testing</li>
+        <li>Annual external audit</li>
+        <li>Continuous anomaly monitoring</li>
+      </ul>
+    </div>
+    <div style="background:rgba(124,58,237,0.1); border:1px solid rgba(124,58,237,0.25); border-radius:10px; padding:1rem;">
+      <p style="font-size:0.82rem; font-weight:700; color:#C4B5FD; margin-bottom:0.4rem;">🛑 Business Continuity</p>
+      <ul style="font-size:0.78rem; color:rgba(255,255,255,0.65); padding-left:1rem;">
+        <li>Failover region for all services</li>
+        <li>RTO target: &lt; 1 hour</li>
+        <li>Manual override for bank transfers</li>
+        <li>Disaster recovery tested bi-annually</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>EduPay Platform · Slide 24</span>
+    <span>Risk & Compliance Framework</span>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════ SLIDE 25: SUCCESS METRICS & CLOSING ══════════════════════════════════════════ -->
+<section class="slide" style="background:linear-gradient(135deg,#030D18 0%,#082240 60%,#053020 100%);" id="s25">
+  <div class="slide-num">Slide 25 / 25</div>
+  <div class="section-label label-gold">Success Metrics & Closing</div>
+  <h2 class="slide-heading">How We Measure <span style="color:#FDE68A;">Success</span></h2>
+
+  <p class="subtitle" style="margin-bottom:1.8rem;">These are the KPIs that define whether EduPay is delivering on its promise — tracked on the dashboard weekly, reviewed with leadership monthly.</p>
+
+  <div class="grid-3" style="margin-bottom:2rem;">
+    <div>
+      <h3 style="font-size:0.88rem; text-transform:uppercase; letter-spacing:0.08em; color:rgba(255,255,255,0.4); margin-bottom:0.9rem;">Operational KPIs</h3>
+      <div style="display:flex; flex-direction:column; gap:0.6rem;">
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:0.6rem 0; border-bottom:1px solid rgba(255,255,255,0.06);">
+          <span style="font-size:0.82rem;">Average review cycle time</span>
+          <span style="font-size:0.88rem; font-weight:700; color:#FCD34D;">&lt; 2 hrs</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:0.6rem 0; border-bottom:1px solid rgba(255,255,255,0.06);">
+          <span style="font-size:0.82rem;">SLA compliance rate</span>
+          <span style="font-size:0.88rem; font-weight:700; color:#6EE7B7;">&gt; 95%</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:0.6rem 0; border-bottom:1px solid rgba(255,255,255,0.06);">
+          <span style="font-size:0.82rem;">Manual interventions per day</span>
+          <span style="font-size:0.88rem; font-weight:700; color:#6EE7B7;">&lt; 5</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:0.6rem 0;">
+          <span style="font-size:0.82rem;">Transactions processed / reviewer</span>
+          <span style="font-size:0.88rem; font-weight:700; color:#FCD34D;">&gt; 50/day</span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <h3 style="font-size:0.88rem; text-transform:uppercase; letter-spacing:0.08em; color:rgba(255,255,255,0.4); margin-bottom:0.9rem;">Financial KPIs</h3>
+      <div style="display:flex; flex-direction:column; gap:0.6rem;">
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:0.6rem 0; border-bottom:1px solid rgba(255,255,255,0.06);">
+          <span style="font-size:0.82rem;">Bank transfer success rate</span>
+          <span style="font-size:0.88rem; font-weight:700; color:#6EE7B7;">&gt; 99.5%</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:0.6rem 0; border-bottom:1px solid rgba(255,255,255,0.06);">
+          <span style="font-size:0.82rem;">Reconciliation match rate</span>
+          <span style="font-size:0.88rem; font-weight:700; color:#6EE7B7;">100%</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:0.6rem 0; border-bottom:1px solid rgba(255,255,255,0.06);">
+          <span style="font-size:0.82rem;">Unresolved exceptions &gt; 24h</span>
+          <span style="font-size:0.88rem; font-weight:700; color:#6EE7B7;">= 0</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:0.6rem 0;">
+          <span style="font-size:0.82rem;">Ledger imbalance incidents</span>
+          <span style="font-size:0.88rem; font-weight:700; color:#6EE7B7;">= 0</span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <h3 style="font-size:0.88rem; text-transform:uppercase; letter-spacing:0.08em; color:rgba(255,255,255,0.4); margin-bottom:0.9rem;">Platform KPIs</h3>
+      <div style="display:flex; flex-direction:column; gap:0.6rem;">
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:0.6rem 0; border-bottom:1px solid rgba(255,255,255,0.06);">
+          <span style="font-size:0.82rem;">System uptime</span>
+          <span style="font-size:0.88rem; font-weight:700; color:#6EE7B7;">&gt; 99.9%</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:0.6rem 0; border-bottom:1px solid rgba(255,255,255,0.06);">
+          <span style="font-size:0.82rem;">Security incidents</span>
+          <span style="font-size:0.88rem; font-weight:700; color:#6EE7B7;">= 0</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:0.6rem 0; border-bottom:1px solid rgba(255,255,255,0.06);">
+          <span style="font-size:0.82rem;">School onboarding time</span>
+          <span style="font-size:0.88rem; font-weight:700; color:#FCD34D;">&lt; 2 days</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:0.6rem 0;">
+          <span style="font-size:0.82rem;">User satisfaction score (NPS)</span>
+          <span style="font-size:0.88rem; font-weight:700; color:#FCD34D;">&gt; 70</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Closing Banner -->
+  <div style="background:linear-gradient(135deg, rgba(245,158,11,0.18) 0%, rgba(13,148,136,0.18) 50%, rgba(124,58,237,0.18) 100%); border:1px solid rgba(245,158,11,0.3); border-radius:16px; padding:2rem 2.5rem; text-align:center;">
+    <p style="font-size:0.8rem; text-transform:uppercase; letter-spacing:0.15em; color:rgba(255,255,255,0.4); margin-bottom:0.8rem;">The Vision</p>
+    <p style="font-size:1.3rem; font-weight:700; line-height:1.5; max-width:680px; margin:0 auto 1.2rem; color:white;">
+      EduPay transforms school finance operations from a reactive, manual burden into a
+      <span style="color:var(--gold);"> governed, automated, and fully transparent</span> system — one that finance teams trust and schools depend on.
+    </p>
+    <div style="display:flex; justify-content:center; gap:2rem; flex-wrap:wrap; margin-top:1.2rem;">
+      <div style="text-align:center;">
+        <div style="font-size:1.6rem; font-weight:800; color:var(--gold);">25</div>
+        <div style="font-size:0.72rem; color:rgba(255,255,255,0.4);">Slides · Full Scope</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-size:1.6rem; font-weight:800; color:#5EEAD4;">3</div>
+        <div style="font-size:0.72rem; color:rgba(255,255,255,0.4);">Delivery Phases</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-size:1.6rem; font-weight:800; color:#C4B5FD;">6</div>
+        <div style="font-size:0.72rem; color:rgba(255,255,255,0.4);">Core Modules</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-size:1.6rem; font-weight:800; color:#FCA5A5;">0</div>
+        <div style="font-size:0.72rem; color:rgba(255,255,255,0.4);">Unauthorized Transfers</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>EduPay Platform · Slide 25 of 25</span>
     <span>CONFIDENTIAL — For Internal Review Only · 2026</span>
   </div>
 </section>
